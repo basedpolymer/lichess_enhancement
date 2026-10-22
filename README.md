@@ -10,7 +10,7 @@
 
 - **61 piece sets** — chess.com (2D and 3D), Chessfactory, Maurizio Monge, and community sets (Amogus, Doge, Pony…)
 - **33 board themes** — chess.com boards plus a few extras
-- **10 sound sets** — replaces the lichess move / capture / check / checkmate sounds with chess.com sound themes
+- **10 sound sets** — replaces the lichess move / capture / check / checkmate sounds with chess.com sound themes. A move that gives check plays only the check sound, and the chess.com default set adds castle and game-start sounds
 - A **preview page** showing every piece set and board (link inside the popup)
 
 Everything is configured from the extension popup and applies immediately to the active lichess tab.
@@ -38,7 +38,7 @@ AMO review can make the listing lag a few days behind this repo. To run the late
 ## How it works
 
 - **Pieces and boards**: a content script injects a stylesheet on lichess pages that overrides the piece sprites (`piece.<color>.<role>`) and the board texture (`cg-board::before`) with images bundled in the extension.
-- **Sounds**: `declarativeNetRequest` rules redirect the lichess sound files (`Move`, `Capture`, `Check`, `Checkmate`) to the mp3 files of the selected sound set. No network request leaves the extension: everything is served locally.
+- **Sounds**: `declarativeNetRequest` rules redirect the lichess sound files (`Move`, `Capture`, `Check`, `Checkmate`) to the mp3 files of the selected sound set. No network request leaves the extension: everything is served locally. A small script running in the lichess page (`ressources/js/soundHook.js`) wraps lichess's sound player to pick a single sound per move, and plays `Castle` / `GameStart` (redirected the same way) with the chess.com default set.
 
 ## Contributing
 

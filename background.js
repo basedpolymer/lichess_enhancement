@@ -59,7 +59,7 @@ extApi.storage.onChanged.addListener((changes, area) => {
 
 //Runs in lichess's MAIN world: flush the decoded-sound cache (so a new sound set is
 //re-fetched through the new redirect rules) and pre-decode the sounds we replace
-function primeLichessSounds() {
+function primeLichessSounds(soundSet) {
   let tries = 0;
   const timer = setInterval(() => {
     tries += 1;
@@ -69,7 +69,10 @@ function primeLichessSounds() {
       if (sound.sounds && typeof sound.sounds.clear === 'function') {
         sound.sounds.clear();
       }
-      ['move', 'capture', 'check', 'checkmate'].forEach((name) => {
+      const names = ['move', 'capture', 'check', 'checkmate'];
+      //Only the chess.com set has a castle sound (played by soundHook.js)
+      if (soundSet === 'chessdotcomdefault') names.push('castle');
+      names.forEach((name) => {
         //load() is async and can reject (no AudioContext, fetch error)
         try {
           Promise.resolve(sound.load(name)).catch(() => {});
@@ -85,13 +88,13 @@ extApi.runtime.onMessage.addListener((request, sender) => {
   //From the popup: the sound set changed for the given lichess tab
   if (request && request.sounds_init && request.tab) {
     extApi.scripting
-      .executeScript({ target: { tabId: request.tab }, world: 'MAIN', func: primeLichessSounds })
+      .executeScript({ target: { tabId: request.tab }, world: 'MAIN', func: primeLichessSounds, args: [request.sounds_init] })
       .catch((error) => console.warn('[lichess-enhancement]', error));
   }
   //From the content script: warm the sound cache on page load
   if (request && request.sound_warmup && sender.tab) {
     extApi.scripting
-      .executeScript({ target: { tabId: sender.tab.id }, world: 'MAIN', func: primeLichessSounds })
+      .executeScript({ target: { tabId: sender.tab.id }, world: 'MAIN', func: primeLichessSounds, args: [request.sound_warmup] })
       .catch(() => {});
   }
 });

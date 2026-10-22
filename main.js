@@ -26,13 +26,24 @@ extApi.runtime.onMessage.addListener(function (request) {
   }
 });
 
+//PUBLISH THE SOUND SET TO THE PAGE: soundHook.js (lichess's MAIN world) reads <html data-le-sounds>
+
+function publishSoundSet(sounds) {
+  document.documentElement.dataset.leSounds = sounds || 'none';
+}
+
+extApi.storage.onChanged.addListener(function (changes, area) {
+  if (area === 'sync' && changes.sounds) {
+    publishSoundSet(changes.sounds.newValue);
+  }
+});
+
 //ASK THE BACKGROUND TO PRE-DECODE THE REPLACED SOUNDS IN LICHESS'S SOUND CACHE,
 //OTHERWISE THE FIRST CHECK/CHECKMATE OF A GAME PLAYS LATE (issue #15)
 
-if (window.top === window) {
-  extApi.storage.sync.get('sounds').then(function (data) {
-    if (data.sounds && data.sounds !== 'none') {
-      extApi.runtime.sendMessage({ sound_warmup: true }).catch(function () {});
-    }
-  });
-}
+extApi.storage.sync.get('sounds').then(function (data) {
+  publishSoundSet(data.sounds);
+  if (window.top === window && data.sounds && data.sounds !== 'none') {
+    extApi.runtime.sendMessage({ sound_warmup: data.sounds }).catch(function () {});
+  }
+}).catch(function () {});
