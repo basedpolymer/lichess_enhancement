@@ -1,313 +1,204 @@
+//Runs in lichess's MAIN world (document_start) and wraps site.sound while one of our sound sets is
+//enabled (main.js publishes the popup choice as <html data-le-sounds>):
+//- a move that gives check plays only the check / checkmate sound (lichess also plays the move sound)
+//- with the chess.com set, castling plays castle.mp3 and a new game plays game-start.mp3. lichess fetches
+//  them as sound/<set>/Castle.mp3 and GameStart.mp3, which the declarativeNetRequest rules redirect
+
 (function () {
-  if (window.__leSoundHookInstalled) return;
-  window.__leSoundHookInstalled = true;
+  //<html> may not exist yet at document_start
+  const soundSet = () => document.documentElement.dataset.leSounds;
+  const enabled = () => !!soundSet() && soundSet() !== 'none';
+  //lichess's music theme and speech mode replace the board sounds: leave them alone
+  const boardSounds = (sound) => sound.theme !== 'music' && !sound.speech();
+  const chessComSounds = (sound) => soundSet() === 'chessdotcomdefault' && boardSounds(sound);
 
-  let currentConfig = {
-    theme: 'chessdotcomdefault',
-    urls: {}
-  };
-
-  let lastCheckPlayedAt = 0;
-  let pendingMoveTimer = null;
-  let startedGameIds = new Set();
-  let hooksApplied = false;
-
-  function updateConfig(newConfig) {
-    if (!newConfig) return;
-    currentConfig = Object.assign(currentConfig, newConfig);
-    if (window.site && window.site.sound) {
-      applyHooks();
-      ensureCustomPaths();
-      loadCustomSounds();
-      checkGameStart();
-    }
+  function sanSound(san, sound) {
+    if (san.includes('#')) return 'checkmate';
+    if (san.includes('+')) return 'check';
+    if (san.startsWith('O-O') && chessComSounds(sound)) return 'castle';
+    return san.includes('x') ? 'capture' : 'move';
   }
 
-  // Listen for config events from content script (main.js)
-  document.addEventListener('leSoundConfig', function (e) {
-    if (e && e.detail) updateConfig(e.detail);
-  });
-
-  // Check dataset if already populated on <html>
-  try {
-    if (document.documentElement.dataset.leSounds) {
-      updateConfig(JSON.parse(document.documentElement.dataset.leSounds));
-    }
-  } catch (e) {}
-
-  window.__setLichessEnhancementSoundConfig = updateConfig;
-
-  function isEnabled() {
-    return currentConfig.theme && currentConfig.theme !== 'none';
-  }
-
-  function isChessComDefault() {
-    return currentConfig.theme === 'chessdotcomdefault';
-  }
-
-  function getChessground() {
+  function loadedSound(sound, name) {
     try {
-      if (typeof window.lichess?.chessground === 'function') {
-        return window.lichess.chessground();
-      }
-      return window.lichess?.chessground || null;
+      return sound.sounds.get(sound.paths.get(name) || sound.resolvePath(name));
     } catch (e) {
-      return null;
+      return undefined;
     }
   }
 
-  function getPieceAt(cg, sq) {
-    if (!cg || !cg.state || !cg.state.pieces) return null;
-    if (typeof cg.state.pieces.get === 'function') {
-      return cg.state.pieces.get(sq) || null;
-    }
-    return cg.state.pieces[sq] || null;
-  }
-
-  function isLastMoveCastling(o, cg) {
-    if (o?.castle) return true;
-    if (o?.san && o.san.startsWith('O-O')) return true;
-    if (!cg || !cg.state) return false;
-    const lastMove = cg.state.lastMove;
-    if (!lastMove || !Array.isArray(lastMove) || lastMove.length < 2) return false;
-    const [orig, dest] = lastMove;
-    const piece = getPieceAt(cg, dest);
-    if (!piece || piece.role !== 'king') return false;
-
-    // Standard chess castling squares
-    if (piece.color === 'white' && orig === 'e1' && (dest === 'g1' || dest === 'c1')) return true;
-    if (piece.color === 'black' && orig === 'e8' && (dest === 'g8' || dest === 'c8')) return true;
-
-    // File distance > 1 for king move (covers Chess960 castling as well)
-    const origFile = orig.charCodeAt(0) - 97;
-    const destFile = dest.charCodeAt(0) - 97;
-    if (Math.abs(origFile - destFile) > 1) return true;
-
-    return false;
-  }
-
-  function cancelPendingMove() {
-    if (pendingMoveTimer) {
-      clearTimeout(pendingMoveTimer);
-      pendingMoveTimer = null;
-    }
-  }
-
-  function silenceSound(name) {
+  //Cut a sound that is still playing; lichess sets the gain again on its next play
+  function fadeOut(sound, name) {
+    const instance = loadedSound(sound, name);
+    if (!instance) return;
     try {
-      const sound = window.site && window.site.sound;
-      if (!sound) return;
-      const path = sound.paths?.get(name) || (typeof sound.resolvePath === 'function' ? sound.resolvePath(name) : null);
-      if (!path) return;
-      const instance = sound.sounds?.get(path);
-      if (instance && instance.node && sound.ctx) {
-        instance.node.gain.setValueAtTime(0, sound.ctx.currentTime);
-        setTimeout(() => {
-          try {
-            if (instance.node && sound.ctx) {
-              const vol = typeof sound.getVolume === 'function' ? sound.getVolume() : 1;
-              instance.node.gain.setValueAtTime(vol, sound.ctx.currentTime);
-            }
-          } catch (e) {}
-        }, 50);
-      }
+      const gain = instance.node.gain;
+      const now = instance.ctx.currentTime;
+      gain.cancelScheduledValues(now);
+      gain.setValueAtTime(gain.value, now);
+      gain.linearRampToValueAtTime(0, now + 0.03);
     } catch (e) {}
   }
 
-  function ensureCustomPaths() {
-    const sound = window.site && window.site.sound;
-    if (!sound || !isChessComDefault()) return;
-    if (currentConfig.urls?.castle && sound.paths) {
-      sound.paths.set('castle', currentConfig.urls.castle);
-    }
-    if (currentConfig.urls?.gameStart && sound.paths) {
-      sound.paths.set('gameStart', currentConfig.urls.gameStart);
-    }
+  function cancelFade(sound, name) {
+    const instance = loadedSound(sound, name);
+    try {
+      if (instance) instance.node.gain.cancelScheduledValues(0);
+    } catch (e) {}
   }
 
-  function loadCustomSounds() {
-    const sound = window.site && window.site.sound;
-    if (!sound || typeof sound.load !== 'function') return;
+  //CASTLING ON THE LIVE BOARD: own moves reach site.sound without their SAN, so read them off the board.
+  //chessground keeps the square (cgKey) of its <square> and <piece> elements as DOM properties
 
-    if (isChessComDefault()) {
-      ensureCustomPaths();
-      if (currentConfig.urls?.castle) {
-        sound.load('castle', currentConfig.urls.castle).catch(() => {});
-      }
-      if (currentConfig.urls?.gameStart) {
-        sound.load('gameStart', currentConfig.urls.gameStart).catch(() => {});
-      }
-    }
+  const visible = (el) => el.style.display !== 'none';
+
+  function pieceAt(board, key) {
+    return [...board.querySelectorAll('piece')].find(
+      (p) => p.cgKey === key && !p.classList.contains('ghost') && !p.classList.contains('fading')
+    );
   }
 
-  function checkGameStart() {
-    if (!isChessComDefault()) return;
-    const sound = window.site && window.site.sound;
-    if (!sound) return;
+  //chessground draws animated moves (clicks, premoves) at once and dropped pieces on the next frame.
+  //Until it draws, the moving piece is still marked: dragged, or on a selected / premove square
+  function piecesAwaitingRedraw(board) {
+    const squares = [...board.querySelectorAll('square.selected, square.current-premove')].filter(visible);
+    return [...board.querySelectorAll('piece.dragging')].concat(squares.map((sq) => pieceAt(board, sq.cgKey)));
+  }
 
-    // Check if on a game URL (e.g. /ab12cd34)
-    const match = location.pathname.match(/^\/([a-zA-Z0-9]{8,12})/);
-    if (!match) return;
-    const gameId = match[1].slice(0, 8);
+  //After the redraw: the king two files away from the square it left, or both squares empty
+  //when the king was dropped on its rook (chess960)
+  function boardShowsCastle(board) {
+    const keys = [...board.querySelectorAll('square.last-move')].filter(visible).map((sq) => sq.cgKey);
+    if (keys.length !== 2) return false;
+    const [a, b] = keys.map((key) => pieceAt(board, key));
+    if (!a && !b) return true;
+    const king = a || b;
+    if ((a && b) || !king.classList.contains('king')) return false;
+    return Math.abs(keys[0].charCodeAt(0) - keys[1].charCodeAt(0)) >= 2;
+  }
 
-    if (startedGameIds.has(gameId)) return;
+  function install(sound) {
+    const play = sound.play;
+    const move = sound.move;
 
-    // Must be in a game round (not pure analysis / study)
-    const isRound = document.querySelector('.round__app');
-    const isAnalyse = document.querySelector('.analyse__app');
-    if (!isRound || isAnalyse) return;
-
-    // Check if at the start of the game (0 or 1 move played)
-    const moveCount = document.querySelectorAll('.rmoves move').length;
-    if (moveCount <= 1) {
-      startedGameIds.add(gameId);
-      ensureCustomPaths();
+    //lichess plays the board sound of a received move from a chessground callback (setTimeout 1ms) queued
+    //before it plays check and reports the SAN: a 1ms timer set at that point fires right after that sound
+    let checkPlayed = false;
+    let receivedSan;
+    const expireSoon = () =>
       setTimeout(() => {
-        try {
-          if (typeof sound.play === 'function') {
-            sound.play('gameStart').catch(() => {});
-          }
-        } catch (e) {}
-      }, 250);
-    }
-  }
+        checkPlayed = false;
+        receivedSan = undefined;
+      }, 1);
 
-  function applyHooks() {
-    const sound = window.site && window.site.sound;
-    if (!sound || hooksApplied) return;
-    hooksApplied = true;
-
-    const origMove = sound.move;
-    const origPlay = sound.play;
-    const origPreload = sound.preloadBoardSounds;
-
-    ensureCustomPaths();
-
-    // Hook preloadBoardSounds to pre-load custom sounds and detect game start
-    if (typeof origPreload === 'function') {
-      sound.preloadBoardSounds = function () {
-        origPreload.apply(this, arguments);
-        ensureCustomPaths();
-        loadCustomSounds();
-        checkGameStart();
-      };
-    }
-
-    // Hook sound.play
     sound.play = function (name, volume) {
-      if (!isEnabled()) {
-        return origPlay.apply(this, arguments);
-      }
-
-      // Ensure custom sound URLs are registered before playback
-      if (name === 'castle' && currentConfig.urls?.castle && sound.paths) {
-        sound.paths.set('castle', currentConfig.urls.castle);
-      }
-      if (name === 'gameStart' && currentConfig.urls?.gameStart && sound.paths) {
-        sound.paths.set('gameStart', currentConfig.urls.gameStart);
-      }
-
-      if (name === 'check' || name === 'checkmate') {
-        // Cancel any pending live game move/capture sound immediately!
-        cancelPendingMove();
-        silenceSound('move');
-        silenceSound('capture');
-
-        const now = Date.now();
-        // Ignore duplicate check calls within 300ms
-        if (now - lastCheckPlayedAt < 300) {
-          return Promise.resolve();
-        }
-        lastCheckPlayedAt = now;
-
-        return origPlay.apply(this, arguments);
-      }
-
-      if (name === 'move' || name === 'capture') {
-        // If check was just played within 300ms, do not play move or capture!
-        if (Date.now() - lastCheckPlayedAt < 300) {
-          return Promise.resolve();
+      if (enabled() && boardSounds(sound)) {
+        if (name === 'check' || name === 'checkmate') {
+          //Drop the move sound of a received move, cut ours if it is still playing (own move, server echo)
+          checkPlayed = true;
+          expireSoon();
+          ['move', 'capture', 'castle'].forEach((n) => fadeOut(sound, n));
+        } else if (name === 'move' || name === 'capture' || name === 'castle') {
+          cancelFade(sound, name);
+          if (name === 'castle') {
+            return play.call(this, name, volume).catch(() => play.call(this, 'move', volume));
+          }
         }
       }
-
-      return origPlay.apply(this, arguments);
+      return play.apply(this, arguments);
     };
 
-    // Hook sound.move
+    function ownMove(self, o) {
+      const castle = { ...o, name: 'castle' };
+      const board = document.querySelector('.main-board cg-board');
+      if (!board) return move.call(self, o);
+      const pending = piecesAwaitingRedraw(board);
+      if (!pending.length) return move.call(self, boardShowsCastle(board) ? castle : o);
+      if (document.hidden || !pending.some((p) => p && p.classList.contains('king'))) return move.call(self, o);
+      //A king was dropped: wait for chessground to draw the move
+      let done = false;
+      const finish = (drawn) => {
+        if (done) return;
+        done = true;
+        move.call(self, drawn && boardShowsCastle(board) ? castle : o);
+      };
+      requestAnimationFrame(() => finish(true));
+      setTimeout(() => finish(false), 100);
+      return Promise.resolve();
+    }
+
     sound.move = function (o) {
-      if (!isEnabled()) {
-        return origMove.apply(this, arguments);
+      if (!enabled() || !boardSounds(sound)) return move.apply(this, arguments);
+      //Live game: lichess reports every received move with its SAN (meant for the music theme)
+      if (o && o.filter === 'music') {
+        receivedSan = o.san;
+        expireSoon();
+        return move.apply(this, arguments);
       }
-
-      // If this call is for background music, pass through
-      if (o?.filter === 'music' && currentConfig.theme !== 'music') {
-        return origMove.apply(this, arguments);
+      //Board sound of a live move: { name: 'move' | 'capture' }, or no argument for a crazyhouse drop
+      if (!o || o.name) {
+        if (checkPlayed) {
+          checkPlayed = false;
+          return Promise.resolve();
+        }
+        if (o && o.name === 'move' && chessComSounds(sound)) {
+          if (receivedSan) return move.call(this, receivedSan.startsWith('O-O') ? { ...o, name: 'castle' } : o);
+          return ownMove(this, o);
+        }
+        return move.apply(this, arguments);
       }
-
-      const volume = o?.volume ?? 1;
-      const cg = getChessground();
-
-      // Case 1: SAN is provided (Analysis, Study, TV, Replays, Puzzles, etc.)
-      if (o && o.san) {
-        cancelPendingMove();
-        if (o.san.includes('#')) {
-          return sound.play('checkmate', volume);
-        }
-        if (o.san.includes('+')) {
-          return sound.play('check', volume);
-        }
-        if (isChessComDefault() && isLastMoveCastling(o, cg)) {
-          return sound.play('castle', volume);
-        }
-        if (o.san.includes('x')) {
-          return sound.play('capture', volume);
-        }
-        return sound.play('move', volume);
-      }
-
-      // Case 2: Live gameplay move (Piece drop)
-      if (o && o.name) {
-        // Castling detection
-        if (isChessComDefault() && isLastMoveCastling(o, cg)) {
-          cancelPendingMove();
-          return sound.play('castle', volume);
-        }
-
-        // Live piece drop: debounce move/capture sound by 60ms.
-        // If the server confirms check, sound.play('check') cancels this timer before it fires!
-        cancelPendingMove();
-        pendingMoveTimer = setTimeout(() => {
-          pendingMoveTimer = null;
-          sound.play(o.name, volume);
-        }, 60);
-
-        return Promise.resolve();
-      }
-
-      return origMove.apply(this, arguments);
+      //Analysis, studies, puzzles, replays: a single sound picked from the SAN
+      if (o.san) return move.call(this, { ...o, name: sanSound(o.san, sound) });
+      return move.apply(this, arguments);
     };
   }
 
-  // Poll for site.sound to be initialized
-  let checkTries = 0;
-  const initInterval = setInterval(() => {
-    checkTries++;
-    if (window.site && window.site.sound) {
-      applyHooks();
-      ensureCustomPaths();
-      loadCustomSounds();
-      checkGameStart();
-      if (checkTries >= 30) clearInterval(initInterval);
-    } else if (checkTries >= 60) {
-      clearInterval(initInterval);
+  //GAME START: the round page embeds its data in <script id="page-init-data">, read by lichess on DOMContentLoaded
+
+  function newGameId() {
+    let data;
+    try {
+      data = JSON.parse(document.getElementById('page-init-data').textContent).data;
+    } catch (e) {
+      return undefined;
     }
-  }, 200);
+    const game = data && data.game;
+    if (!document.querySelector('main.round') || !game || !data.player || data.player.spectator) return undefined;
+    //Status created (10) or started (20), and no move played yet
+    if (!game.status || game.status.id > 20 || game.turns !== (game.startedAtTurn || 0)) return undefined;
+    return game.id;
+  }
 
-  // Monitor DOM / URL changes for SPA game transitions
-  const observer = new MutationObserver(() => {
-    checkGameStart();
+  function whenSoundSetKnown(callback) {
+    if (soundSet()) return callback();
+    const observer = new MutationObserver(() => {
+      if (!soundSet()) return;
+      observer.disconnect();
+      callback();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-le-sounds'] });
+    setTimeout(() => observer.disconnect(), 10000);
+  }
+
+  function playGameStart(sound) {
+    const id = newGameId();
+    if (!id) return;
+    //Once per game: not again when the page is reloaded before the first move
+    const key = 'lichess-enhancement-game-start-' + id;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, '1');
+    } catch (e) {}
+    whenSoundSetKnown(() => {
+      if (chessComSounds(sound)) Promise.resolve(sound.play('gameStart')).catch(() => {});
+    });
+  }
+
+  //Registered before lichess's own listener; site.sound is set up by then (module scripts run first)
+  document.addEventListener('DOMContentLoaded', () => {
+    const sound = window.site && window.site.sound;
+    if (!sound || typeof sound.play !== 'function' || typeof sound.move !== 'function') return;
+    install(sound);
+    playGameStart(sound);
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-
-  window.addEventListener('popstate', checkGameStart);
 })();

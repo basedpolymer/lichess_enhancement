@@ -66,5 +66,39 @@
         "media"
       ]
     }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/chessdotcomdefault/castle.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Castle\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Castle)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/chessdotcomdefault/game-start.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/GameStart\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/GameStart)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
   }
 ]

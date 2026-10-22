@@ -59,68 +59,42 @@ extApi.storage.onChanged.addListener((changes, area) => {
 
 //Runs in lichess's MAIN world: flush the decoded-sound cache (so a new sound set is
 //re-fetched through the new redirect rules) and pre-decode the sounds we replace
-function primeLichessSounds(config) {
+function primeLichessSounds(soundSet) {
   let tries = 0;
   const timer = setInterval(() => {
     tries += 1;
-    if (config && typeof window.__setLichessEnhancementSoundConfig === 'function') {
-      window.__setLichessEnhancementSoundConfig(config);
-    }
     const sound = window.site && window.site.sound;
     if (sound && typeof sound.load === 'function') {
       clearInterval(timer);
       if (sound.sounds && typeof sound.sounds.clear === 'function') {
         sound.sounds.clear();
       }
-      ['move', 'capture', 'check', 'checkmate'].forEach((name) => {
+      const names = ['move', 'capture', 'check', 'checkmate'];
+      //Only the chess.com set has a castle sound (played by soundHook.js)
+      if (soundSet === 'chessdotcomdefault') names.push('castle');
+      names.forEach((name) => {
         //load() is async and can reject (no AudioContext, fetch error)
         try {
           Promise.resolve(sound.load(name)).catch(() => {});
         } catch (e) {}
       });
-      if (config && config.theme === 'chessdotcomdefault' && config.urls) {
-        if (config.urls.castle) {
-          try {
-            Promise.resolve(sound.load('castle', config.urls.castle)).catch(() => {});
-          } catch (e) {}
-        }
-        if (config.urls.gameStart) {
-          try {
-            Promise.resolve(sound.load('gameStart', config.urls.gameStart)).catch(() => {});
-          } catch (e) {}
-        }
-      }
     } else if (tries >= 20) {
       clearInterval(timer);
     }
   }, 500);
 }
 
-async function getSoundConfig() {
-  const data = await extApi.storage.sync.get('sounds');
-  const sounds = data.sounds || 'chessdotcomdefault';
-  return {
-    theme: sounds,
-    urls: {
-      castle: extApi.runtime.getURL('ressources/sounds/chessdotcomdefault/castle.mp3'),
-      gameStart: extApi.runtime.getURL('ressources/sounds/chessdotcomdefault/game-start.mp3')
-    }
-  };
-}
-
-extApi.runtime.onMessage.addListener(async (request, sender) => {
+extApi.runtime.onMessage.addListener((request, sender) => {
   //From the popup: the sound set changed for the given lichess tab
   if (request && request.sounds_init && request.tab) {
-    const config = await getSoundConfig();
     extApi.scripting
-      .executeScript({ target: { tabId: request.tab }, world: 'MAIN', func: primeLichessSounds, args: [config] })
+      .executeScript({ target: { tabId: request.tab }, world: 'MAIN', func: primeLichessSounds, args: [request.sounds_init] })
       .catch((error) => console.warn('[lichess-enhancement]', error));
   }
   //From the content script: warm the sound cache on page load
   if (request && request.sound_warmup && sender.tab) {
-    const config = await getSoundConfig();
     extApi.scripting
-      .executeScript({ target: { tabId: sender.tab.id }, world: 'MAIN', func: primeLichessSounds, args: [config] })
+      .executeScript({ target: { tabId: sender.tab.id }, world: 'MAIN', func: primeLichessSounds, args: [request.sound_warmup] })
       .catch(() => {});
   }
 });

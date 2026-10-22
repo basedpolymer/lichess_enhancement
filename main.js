@@ -24,32 +24,26 @@ extApi.runtime.onMessage.addListener(function (request) {
   if (request && (request.pieces_init || request.board_init)) {
     applyFromStorage();
   }
-  if (request && request.sounds_init) {
-    syncSoundConfig();
+});
+
+//PUBLISH THE SOUND SET TO THE PAGE: soundHook.js (lichess's MAIN world) reads <html data-le-sounds>
+
+function publishSoundSet(sounds) {
+  document.documentElement.dataset.leSounds = sounds || 'none';
+}
+
+extApi.storage.onChanged.addListener(function (changes, area) {
+  if (area === 'sync' && changes.sounds) {
+    publishSoundSet(changes.sounds.newValue);
   }
 });
 
-//SYNCHRONIZE SOUND CONFIGURATION AND WARM UP LICHESS'S SOUND CACHE
-function syncSoundConfig() {
-  if (window.top !== window) return;
-  extApi.storage.sync.get('sounds').then(function (data) {
-    const sounds = data.sounds || 'chessdotcomdefault';
-    const config = {
-      theme: sounds,
-      urls: {
-        castle: extApi.runtime.getURL('ressources/sounds/chessdotcomdefault/castle.mp3'),
-        gameStart: extApi.runtime.getURL('ressources/sounds/chessdotcomdefault/game-start.mp3')
-      }
-    };
-    try {
-      document.documentElement.dataset.leSounds = JSON.stringify(config);
-      document.dispatchEvent(new CustomEvent('leSoundConfig', { detail: config }));
-    } catch (e) {}
+//ASK THE BACKGROUND TO PRE-DECODE THE REPLACED SOUNDS IN LICHESS'S SOUND CACHE,
+//OTHERWISE THE FIRST CHECK/CHECKMATE OF A GAME PLAYS LATE (issue #15)
 
-    if (sounds !== 'none') {
-      extApi.runtime.sendMessage({ sound_warmup: true }).catch(function () {});
-    }
-  }).catch(function () {});
-}
-
-syncSoundConfig();
+extApi.storage.sync.get('sounds').then(function (data) {
+  publishSoundSet(data.sounds);
+  if (window.top === window && data.sounds && data.sounds !== 'none') {
+    extApi.runtime.sendMessage({ sound_warmup: data.sounds }).catch(function () {});
+  }
+}).catch(function () {});
