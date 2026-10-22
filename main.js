@@ -24,15 +24,32 @@ extApi.runtime.onMessage.addListener(function (request) {
   if (request && (request.pieces_init || request.board_init)) {
     applyFromStorage();
   }
+  if (request && request.sounds_init) {
+    syncSoundConfig();
+  }
 });
 
-//ASK THE BACKGROUND TO PRE-DECODE THE REPLACED SOUNDS IN LICHESS'S SOUND CACHE,
-//OTHERWISE THE FIRST CHECK/CHECKMATE OF A GAME PLAYS LATE (issue #15)
-
-if (window.top === window) {
+//SYNCHRONIZE SOUND CONFIGURATION AND WARM UP LICHESS'S SOUND CACHE
+function syncSoundConfig() {
+  if (window.top !== window) return;
   extApi.storage.sync.get('sounds').then(function (data) {
-    if (data.sounds && data.sounds !== 'none') {
+    const sounds = data.sounds || 'chessdotcomdefault';
+    const config = {
+      theme: sounds,
+      urls: {
+        castle: extApi.runtime.getURL('ressources/sounds/chessdotcomdefault/castle.mp3'),
+        gameStart: extApi.runtime.getURL('ressources/sounds/chessdotcomdefault/game-start.mp3')
+      }
+    };
+    try {
+      document.documentElement.dataset.leSounds = JSON.stringify(config);
+      document.dispatchEvent(new CustomEvent('leSoundConfig', { detail: config }));
+    } catch (e) {}
+
+    if (sounds !== 'none') {
       extApi.runtime.sendMessage({ sound_warmup: true }).catch(function () {});
     }
-  });
+  }).catch(function () {});
 }
+
+syncSoundConfig();

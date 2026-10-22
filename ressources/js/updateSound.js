@@ -22,6 +22,7 @@ sounds_select.onchange = async function () {
     const [tab] = await extApi.tabs.query({ active: true, currentWindow: true });
     if (tab && /^https?:\/\/([a-z0-9-]+\.)?lichess1?\.org\//.test(tab.url || '')) {
       extApi.runtime.sendMessage({ sounds_init: value, tab: tab.id }).catch(() => {});
+      extApi.tabs.sendMessage(tab.id, { sounds_init: value }).catch(() => {});
     }
   } catch (error) {
     console.error(error);
