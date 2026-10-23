@@ -2,7 +2,8 @@ var extApi = typeof browser !== 'undefined' ? browser : chrome;
 var piece_select = document.getElementById('pieces_select');
 
 //UPDATE <OPTION> WITH VALUE IN STORAGE
-extApi.storage.sync.get('pieces').then(function (data) {
+//Default: DEFAULT_SETTINGS in background.js
+extApi.storage.sync.get({ pieces: 'neo' }).then(function (data) {
   if (data.pieces) {
     piece_select.value = data.pieces;
   }

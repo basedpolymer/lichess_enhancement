@@ -2,7 +2,8 @@ var extApi = typeof browser !== 'undefined' ? browser : chrome;
 var board_select = document.getElementById('board_select');
 
 //UPDATE <OPTION> WITH VALUE IN STORAGE
-extApi.storage.sync.get('board').then(function (data) {
+//Default: DEFAULT_SETTINGS in background.js
+extApi.storage.sync.get({ board: 'green' }).then(function (data) {
   if (data.board) {
     board_select.value = data.board;
   }
