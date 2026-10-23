@@ -2,7 +2,8 @@ var extApi = typeof browser !== 'undefined' ? browser : chrome;
 var sounds_select = document.getElementById('sounds_select');
 
 //UPDATE <OPTION> WITH VALUE IN STORAGE
-extApi.storage.sync.get('sounds').then(function (data) {
+//Default: DEFAULT_SETTINGS in background.js
+extApi.storage.sync.get({ sounds: 'chessdotcomdefault' }).then(function (data) {
   if (data.sounds) {
     sounds_select.value = data.sounds;
   }

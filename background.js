@@ -1,6 +1,9 @@
 //browser (Firefox, promise-native) or chrome (Chromium)
 var extApi = typeof browser !== 'undefined' ? browser : chrome;
 
+//Applied when a setting has never been chosen. They are never written to storage: onInstalled can report
+//'install' again (reinstall, install on another synced device, --load-extension on every browser start) and
+//writing them there wiped the user's synced choices. Keep in sync with main.js and the popup scripts
 const DEFAULT_SETTINGS = { pieces: 'neo', board: 'green', sounds: 'chessdotcomdefault' };
 
 //Popup values that shipped with the wrong case (issue #14): map old saved values to the real folder names
@@ -14,8 +17,7 @@ const LEGACY_PIECE_VALUES = {
 //Chrome resets enabled static rulesets to the manifest defaults on every extension update,
 //so re-align them with the user's saved sound choice
 async function syncRulesets() {
-  const data = await extApi.storage.sync.get('sounds');
-  const sounds = data.sounds || 'none';
+  const { sounds } = await extApi.storage.sync.get({ sounds: DEFAULT_SETTINGS.sounds });
   const enabled = await extApi.declarativeNetRequest.getEnabledRulesets();
   await extApi.declarativeNetRequest.updateEnabledRulesets({
     disableRulesetIds: enabled.filter((id) => id !== sounds),
@@ -31,12 +33,8 @@ async function migrateStoredPieces() {
   }
 }
 
-extApi.runtime.onInstalled.addListener(async (details) => {
+extApi.runtime.onInstalled.addListener(async () => {
   try {
-    //Only seed defaults on first install: an update must never overwrite the user's settings
-    if (details.reason === 'install') {
-      await extApi.storage.sync.set(DEFAULT_SETTINGS);
-    }
     await migrateStoredPieces();
     await syncRulesets();
   } catch (error) {

@@ -2,7 +2,8 @@
 //extApi is defined in Boards.js (content scripts share one isolated-world scope)
 
 function applyFromStorage() {
-  extApi.storage.sync.get(['pieces', 'board']).then(function (data) {
+  //Defaults: DEFAULT_SETTINGS in background.js
+  extApi.storage.sync.get({ pieces: 'neo', board: 'green' }).then(function (data) {
     if (data.pieces && data.pieces !== 'none_pieces') {
       Pieces.chooseStyleAndApply(data.pieces);
     } else {
@@ -41,7 +42,7 @@ extApi.storage.onChanged.addListener(function (changes, area) {
 //ASK THE BACKGROUND TO PRE-DECODE THE REPLACED SOUNDS IN LICHESS'S SOUND CACHE,
 //OTHERWISE THE FIRST CHECK/CHECKMATE OF A GAME PLAYS LATE (issue #15)
 
-extApi.storage.sync.get('sounds').then(function (data) {
+extApi.storage.sync.get({ sounds: 'chessdotcomdefault' }).then(function (data) {
   publishSoundSet(data.sounds);
   if (window.top === window && data.sounds && data.sounds !== 'none') {
     extApi.runtime.sendMessage({ sound_warmup: data.sounds }).catch(function () {});
