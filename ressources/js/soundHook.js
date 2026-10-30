@@ -9,7 +9,7 @@
   const soundSet = () => document.documentElement.dataset.leSounds;
   const enabled = () => !!soundSet() && soundSet() !== 'none';
   //lichess's music theme and speech mode replace the board sounds: leave them alone
-  const boardSounds = (sound) => sound.theme !== 'music' && !sound.speech();
+  const boardSounds = (sound) => sound.theme !== 'music' && sound.theme !== 'speech';
   const chessComSounds = (sound) => soundSet() === 'chessdotcomdefault' && boardSounds(sound);
 
   function sanSound(san, sound) {
