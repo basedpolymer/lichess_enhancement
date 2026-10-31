@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Lichess enhancement",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "minimum_chrome_version": "121",
   "description": "New pieces, boards and sounds for Lichess",
   "homepage_url": "https://github.com/basedpolymer/lichess_enhancement",

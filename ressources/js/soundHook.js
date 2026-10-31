@@ -77,6 +77,19 @@
     return Math.abs(keys[0].charCodeAt(0) - keys[1].charCodeAt(0)) >= 2;
   }
 
+  //lichess calls site.sound in the middle of its own logic (a puzzle checks the move right after sound.move,
+  //issue #25): if a lichess update breaks a hook, fall back to its original function rather than throw there
+  function guarded(original, hook) {
+    return function () {
+      try {
+        return hook.apply(this, arguments);
+      } catch (e) {
+        console.warn('[lichess-enhancement]', e);
+        return original.apply(this, arguments);
+      }
+    };
+  }
+
   function install(sound) {
     const play = sound.play;
     const move = sound.move;
@@ -91,7 +104,7 @@
         receivedSan = undefined;
       }, 1);
 
-    sound.play = function (name, volume) {
+    sound.play = guarded(play, function (name, volume) {
       if (enabled() && boardSounds(sound)) {
         if (name === 'check' || name === 'checkmate') {
           //Drop the move sound of a received move, cut ours if it is still playing (own move, server echo)
@@ -106,7 +119,7 @@
         }
       }
       return play.apply(this, arguments);
-    };
+    });
 
     function ownMove(self, o) {
       const castle = { ...o, name: 'castle' };
@@ -127,7 +140,7 @@
       return Promise.resolve();
     }
 
-    sound.move = function (o) {
+    sound.move = guarded(move, function (o) {
       if (!enabled() || !boardSounds(sound)) return move.apply(this, arguments);
       //Live game: lichess reports every received move with its SAN (meant for the music theme)
       if (o && o.filter === 'music') {
@@ -150,7 +163,7 @@
       //Analysis, studies, puzzles, replays: a single sound picked from the SAN
       if (o.san) return move.call(this, { ...o, name: sanSound(o.san, sound) });
       return move.apply(this, arguments);
-    };
+    });
   }
 
   //GAME START: the round page embeds its data in <script id="page-init-data">, read by lichess on DOMContentLoaded
