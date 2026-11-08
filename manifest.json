@@ -21,12 +21,24 @@
     {
       "matches": ["*://*.lichess.org/*", "*://*.lichess1.org/*"],
       "js": [
+        "ressources/js/catalog.js",
+        "ressources/js/settings.js",
         "ressources/js/Boards.js",
         "ressources/js/Pieces.js",
         "main.js"
       ],
       "run_at": "document_end",
       "all_frames": true
+    },
+    {
+      "matches": ["*://*.lichess.org/*", "*://*.lichess1.org/*"],
+      "js": [
+        "ressources/js/gallery.js",
+        "ressources/js/dasher.js",
+        "ressources/js/shortcuts.js"
+      ],
+      "css": ["ressources/css/gallery.css", "ressources/css/lichess.css"],
+      "run_at": "document_end"
     }
   ],
   "background": {
@@ -111,6 +123,7 @@
       "resources": [
         "ressources/pieces/*",
         "ressources/boards/*",
+        "ressources/thumbs/*",
         "ressources/sounds/*"
       ],
       "matches": ["*://*.lichess.org/*", "*://*.lichess1.org/*"]

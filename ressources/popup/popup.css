@@ -1,0 +1,308 @@
+/* THE POPUP (index.html). LIGHT BY DEFAULT, DARK WHEN THE OS ASKS FOR IT; lichess-like colors */
+:root {
+  color-scheme: light;
+  --le-bg: #ffffff;
+  --le-fg: #303030;
+  --le-dim: #767676;
+  --le-hover: #f1efeb;
+  --le-active: #629924;
+  --le-border: #e3e0da;
+  --le-input-bg: #f8f7f4;
+  --le-accent: #3692e7;
+  --le-star: #dd9a0f;
+  --le-card-min: 76px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --le-bg: #262421;
+    --le-fg: #bababa;
+    --le-dim: #8c8a87;
+    --le-hover: #312e2b;
+    --le-active: rgba(98, 153, 36, 0.8);
+    --le-border: #3a3734;
+    --le-input-bg: #1d1b19;
+    --le-accent: #3692e7;
+    --le-star: #e8a92b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 720px;
+  margin: 0;
+  font-family: 'Noto Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color: var(--le-fg);
+  background: var(--le-bg);
+}
+
+a {
+  color: var(--le-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* HEADER */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--le-border);
+}
+
+.brand {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.logo {
+  display: block;
+  height: 26px;
+}
+
+.brand-sub {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--le-dim);
+}
+
+.top nav {
+  display: flex;
+  gap: 14px;
+}
+
+#permissions_banner {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--le-border);
+  text-align: center;
+}
+
+#permissions_banner p {
+  margin: 0 0 6px;
+  color: #ab442f;
+}
+
+/* PICKER | SIDE PANEL */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 228px;
+  /* same height on every tab: the popup window would resize otherwise */
+  min-height: 541px;
+}
+
+.picker {
+  min-width: 0;
+  border-inline-end: 1px solid var(--le-border);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--le-border);
+}
+
+.tabs button {
+  flex: 1;
+  padding: 10px 6px 8px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font-weight: 600;
+  color: var(--le-dim);
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  color: var(--le-fg);
+  background: var(--le-hover);
+}
+
+.tabs button.active {
+  color: var(--le-fg);
+  border-bottom-color: var(--le-accent);
+}
+
+.tabs small {
+  margin-inline-start: 3px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.tab-body[hidden] {
+  display: none;
+}
+
+/* SOUNDS */
+.sounds {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+}
+
+.sounds li {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.sounds li:hover {
+  background: var(--le-hover);
+}
+
+.sounds li.on {
+  color: #fff;
+  background: var(--le-active);
+}
+
+.sound-pick {
+  flex: 1;
+  padding: 8px 10px;
+  border: 0;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+}
+
+.sound-pick::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-inline-end: 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  vertical-align: -1px;
+  opacity: 0.6;
+}
+
+.sounds li.on .sound-pick::before {
+  background: currentColor;
+  opacity: 1;
+}
+
+.sound-play {
+  width: 34px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.sound-play:hover {
+  opacity: 1;
+  background: rgba(127, 127, 127, 0.2);
+}
+
+/* SIDE: small board, current choices, tips */
+.side {
+  padding: 14px;
+}
+
+.mini-board {
+  display: grid;
+  grid-template: repeat(8, 1fr) / repeat(8, 1fr);
+  width: 200px;
+  height: 200px;
+  border-radius: 3px;
+  background-size: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* lichess's brown board: a8 light */
+.mini-board.lichess-board {
+  background: repeating-conic-gradient(#b58863 0 25%, #f0d9b5 0 50%) 0 0 / 25% 25%;
+}
+
+.mp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: center / contain no-repeat;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.mp.glyph.white {
+  color: #fff;
+  -webkit-text-stroke: 0.8px #000;
+}
+
+.mp.glyph.black {
+  color: #000;
+}
+
+.current {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  margin: 14px 0 12px;
+}
+
+.current dt {
+  color: var(--le-dim);
+}
+
+.current dd {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.current dd.fav::after {
+  content: ' ★';
+  color: var(--le-star);
+}
+
+.tips {
+  padding-top: 10px;
+  border-top: 1px solid var(--le-border);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--le-dim);
+}
+
+.tips p {
+  margin: 0 0 8px;
+}
+
+.tips b {
+  color: var(--le-fg);
+}
+
+.keys {
+  display: inline-block;
+  min-width: 112px;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid var(--le-border);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  font: inherit;
+  font-size: 11px;
+  text-align: center;
+  color: var(--le-fg);
+  background: var(--le-input-bg);
+}

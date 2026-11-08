@@ -3,7 +3,7 @@ var extApi = typeof browser !== 'undefined' ? browser : chrome;
 
 //Applied when a setting has never been chosen. They are never written to storage: onInstalled can report
 //'install' again (reinstall, install on another synced device, --load-extension on every browser start) and
-//writing them there wiped the user's synced choices. Keep in sync with main.js and the popup scripts
+//writing them there wiped the user's synced choices. Keep in sync with DEFAULTS in ressources/js/settings.js
 const DEFAULT_SETTINGS = { pieces: 'neo', board: 'green', sounds: 'chessdotcomdefault' };
 
 //Popup values that shipped with the wrong case (issue #14): map old saved values to the real folder names

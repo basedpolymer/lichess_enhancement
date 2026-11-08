@@ -4,285 +4,70 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lichess enhancement</title>
+    <link rel="stylesheet" href="ressources/css/gallery.css" />
+    <link rel="stylesheet" href="ressources/popup/popup.css" />
   </head>
   <body>
-    <center>
-      <h1><img src="ressources/logo/lichess_chess_logo.png" width="300" /></h1>
-      <div style="font-size: 1.3em; font-style: italic">
-        Unofficial lichess enhancement / <a href="#" class="github">Github</a>
+    <!-- The sets are listed in ressources/js/catalog.js -->
+    <header class="top">
+      <div class="brand">
+        <picture>
+          <source srcset="ressources/logo/lichess_chess_logo_white.png" media="(prefers-color-scheme: dark)" />
+          <img class="logo" src="ressources/logo/lichess_chess_logo.png" alt="Lichess" />
+        </picture>
+        <span class="brand-sub">enhancement</span>
       </div>
+      <nav>
+        <a href="#" class="preview">All sets</a>
+        <a href="#" class="github">GitHub</a>
+      </nav>
+    </header>
 
-      <div><a href="#" class="preview">Open pieces/boards preview</a></div>
+    <div id="permissions_banner" style="display: none">
+      <p>The extension needs access to lichess.org to work.</p>
+      <button id="grant_permissions">Grant access to lichess.org</button>
+    </div>
 
-      <div id="permissions_banner" style="display: none; margin-top: 12px">
-        <p style="color: #ab442f; margin: 0 0 6px">
-          The extension needs access to lichess.org to work.
-        </p>
-        <button id="grant_permissions">Grant access to lichess.org</button>
-      </div>
+    <div class="layout">
+      <section class="picker">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" data-tab="pieces">Pieces <small></small></button>
+          <button type="button" role="tab" data-tab="board">Board <small></small></button>
+          <button type="button" role="tab" data-tab="sounds">Sounds <small></small></button>
+        </div>
+        <div class="tab-body" data-tab="pieces"></div>
+        <div class="tab-body" data-tab="board"></div>
+        <div class="tab-body" data-tab="sounds">
+          <ul class="sounds" id="sounds_list"></ul>
+        </div>
+      </section>
 
-      <br />
+      <aside class="side">
+        <div class="mini-board" id="mini_board" aria-hidden="true"></div>
+        <dl class="current">
+          <dt>Pieces</dt>
+          <dd id="current_pieces"></dd>
+          <dt>Board</dt>
+          <dd id="current_board"></dd>
+          <dt>Sounds</dt>
+          <dd id="current_sounds"></dd>
+        </dl>
+        <div class="tips">
+          <p><b>On lichess</b>, the sets are also in your menu: Piece set / Board › <b>Enhancement</b>.</p>
+          <p>
+            <span class="keys"><kbd class="mod">Alt+Shift</kbd> <kbd>←</kbd> <kbd>→</kbd></span> pieces<br />
+            <span class="keys"><kbd class="mod">Alt+Shift</kbd> <kbd>↑</kbd> <kbd>↓</kbd></span> board
+          </p>
+          <p>With two ★ favorites or more, the shortcuts cycle through them.</p>
+        </div>
+      </aside>
+    </div>
 
-      <label for="pieces_select">Pieces:</label>
-      <select name="pieces" id="pieces_select">
-        <option value="none_pieces">Default Lichess pieces</option>
-        <optgroup label="Chess.com">
-          <option value="8_bit">8 Bits</option>
-          <option value="alien">Alien</option>
-          <option value="alpha">Alpha</option>
-          <option value="band_class">Band Class</option>
-          <option value="bases">Bases</option>
-          <option value="book">Book</option>
-          <option value="bubblegum">Bubblegum</option>
-          <option value="cases">Cases</option>
-          <option value="clash_chess">Clash Chess</option>
-          <option value="classic">Classic</option>
-          <option value="club">Club</option>
-          <option value="condal">Condal</option>
-          <option value="cryptids">Cryptids</option>
-          <option value="dash">Dash</option>
-          <option value="game_room">Game room</option>
-          <option value="glass">Glass</option>
-          <option value="gothic">Gothic</option>
-          <option value="graffiti">Graffiti</option>
-          <option value="grand_chess_auto">Grand Chess Auto</option>
-          <option value="icy_sea">Icy Sea</option>
-          <option value="light">Light</option>
-          <option value="lolz">Lolz</option>
-          <option value="luca">Luca</option>
-          <option value="luca_wood">Luca Wood</option>
-          <option value="marble">Marble</option>
-          <option value="maya">Maya</option>
-          <option value="metal">Metal</option>
-          <option value="modern">Modern</option>
-          <option value="nature">Nature</option>
-          <option value="neo">Neo</option>
-          <option value="neo_new">Neo (new)</option>
-          <option value="neo_angle">Neo Angle</option>
-          <option value="neo_wood">Neo-Wood</option>
-          <option value="neon">Neon</option>
-          <option value="newspaper">Newspaper</option>
-          <option value="ocean">Ocean</option>
-          <option value="odyssey">Odyssey</option>
-          <option value="pirate">Pirate</option>
-          <option value="sky">Sky</option>
-          <option value="space">Space</option>
-          <option value="the_woods">The Woods</option>
-          <option value="tigers">Tigers</option>
-          <option value="tournament">Tournament</option>
-          <option value="vintage">Vintage</option>
-          <option value="wood">Wood</option>
-          <option value="3d_wood">3D - Wood</option>
-          <option value="3d_staunton">3D - Staunton</option>
-          <option value="3d_plastic">3D - Plastic</option>
-          <option value="3d_chesskid">3D - Chesskid</option>
-        </optgroup>
-        <optgroup label="Chess.com - Events &amp; sports">
-          <option value="american_football">American Football</option>
-          <option value="baseball">Baseball</option>
-          <option value="basketball">Basketball</option>
-          <option value="esports_world_cup">Esports World Cup</option>
-        </optgroup>
-        <optgroup label="Chess.com - Bots">
-          <option value="back_to_school">Back to School</option>
-          <option value="bbq">BBQ</option>
-          <option value="chess_pieces">Chess Pieces</option>
-          <option value="circus">Circus</option>
-          <option value="dating_bachelor">Dating</option>
-          <option value="dinosaurs">Dinosaurs</option>
-          <option value="earth_day">Earth Day</option>
-          <option value="enter_the_dojo">Enter The Dojo</option>
-          <option value="halloween">Halloween</option>
-          <option value="heist">Heist</option>
-          <option value="holiday">Holiday</option>
-          <option value="holidays">Holidays</option>
-          <option value="kpop">KPop</option>
-          <option value="martins_family">Martin's Family</option>
-          <option value="new_years">New Year's</option>
-          <option value="roman_empire">Roman Empire</option>
-          <option value="runescape">RuneScape</option>
-          <option value="summer">Summer</option>
-          <option value="winter_athletes">Winter Athletes</option>
-        </optgroup>
-        <optgroup label="Chessfactory">
-          <option value="iowa">Iowa</option>
-          <option value="falcon">Falcon</option>
-          <option value="oslo">Oslo</option>
-          <option value="chicago">Chicago</option>
-        </optgroup>
-        <optgroup label="Maurizio Monge">
-          <option value="celtic">Celtic</option>
-          <option value="eyes">Eyes</option>
-          <option value="fantasy">Fantasy</option>
-          <option value="fantasy_alt">Fantasy Alt</option>
-          <option value="freak">Freak</option>
-          <option value="prmi">Prmi</option>
-          <option value="skulls">Skulls</option>
-          <option value="spatial">Spatial</option>
-        </optgroup>
-        <optgroup label="Others">
-          <option value="amogus_1">Amogus 1</option>
-          <option value="amogus_2">Amogus 2</option>
-          <option value="doge">Doge</option>
-          <option value="christmas">Christmas</option>
-          <option value="royale">Royale</option>
-          <option value="random">Random</option>
-          <option value="wehrmacht_soviet">Wehrmacht vs Soviet Union</option>
-          <option value="pony">Pony</option>
-          <option value="penguin">Penguin</option>
-          <option value="sea">Sea</option>
-          <option value="nyc">New York City</option>
-          <option value="chessvision">Chess vision</option>
-        </optgroup>
-      </select>
-
-      <br /><br />
-
-      <label for="board_select">Board:</label>
-      <select name="board" id="board_select">
-        <option value="none_board">Default Lichess board</option>
-        <optgroup label="Chess.com">
-          <option value="8_bit">8 Bits</option>
-          <option value="alien">Alien</option>
-          <option value="band_class">Band Class</option>
-          <option value="bases">Bases</option>
-          <option value="blue">Dark Blue</option>
-          <option value="blue_new">Blue</option>
-          <option value="brilliancy">Brilliancy</option>
-          <option value="brown">Brown</option>
-          <option value="bubblegum">Bubblegum</option>
-          <option value="burled_wood">Burled Wood</option>
-          <option value="checkers">Checkers</option>
-          <option value="chess_the_musical">Chess The Musical</option>
-          <option value="clash_of_clans">Clash of Clans</option>
-          <option value="clash_royale">Clash Royale</option>
-          <option value="cryptids">Cryptids</option>
-          <option value="dark_wood">Dark Wood</option>
-          <option value="dash">Dash</option>
-          <option value="glass">Glass</option>
-          <option value="graffiti">Graffiti</option>
-          <option value="grand_chess_auto">Grand Chess Auto</option>
-          <option value="green">Green</option>
-          <option value="hot_pink">Hot Pink</option>
-          <option value="icy_sea">Icy Sea</option>
-          <option value="light">Light</option>
-          <option value="lolz">Lolz</option>
-          <option value="marble">Marble</option>
-          <option value="metal">Metal</option>
-          <option value="neon">Neon</option>
-          <option value="newpaper">Newspaper</option>
-          <option value="odyssey">Odyssey</option>
-          <option value="orange">Orange</option>
-          <option value="overlay">Overlay</option>
-          <option value="parchment">Parchment</option>
-          <option value="pink">Pink</option>
-          <option value="pirate">Pirate</option>
-          <option value="purple">Purple</option>
-          <option value="red">Red</option>
-          <option value="rose_pink">Rose Pink</option>
-          <option value="sand">Sand</option>
-          <option value="sky">Sky</option>
-          <option value="sky_and_sea">Sky and Sea</option>
-          <option value="stone">Stone</option>
-          <option value="tan">Tan</option>
-          <option value="the_woods">The Woods</option>
-          <option value="tournament">Tournament</option>
-          <option value="translucent">Translucent</option>
-          <option value="travel">Travel</option>
-          <option value="walnut">Walnut</option>
-          <option value="wellington">Wellington</option>
-        </optgroup>
-        <optgroup label="Chess.com - Events &amp; sports">
-          <option value="american_football">American Football</option>
-          <option value="baseball">Baseball</option>
-          <option value="bcc_2024">BCC 2024</option>
-          <option value="bcc_2026">BCC 2026</option>
-          <option value="biel_masters_and_biel_challengers">Biel Masters &amp; Biel Challengers</option>
-          <option value="blitzchamps_maryland">BlitzChamps: Maryland</option>
-          <option value="cct_2024">CCT 2024</option>
-          <option value="cct_finals_2023">CCT Finals 2023</option>
-          <option value="collegiate_chess_league_fall">Collegiate Chess League (Fall)</option>
-          <option value="collegiate_chess_league_spring">Collegiate Chess League (Spring)</option>
-          <option value="community_chess960_championship">Community Chess960 Championship</option>
-          <option value="ej_bots_event">EJ Bots Event</option>
-          <option value="esports_world_cup">Esports World Cup</option>
-          <option value="esports_world_cup_2026">Esports World Cup 2026</option>
-          <option value="fide_candidates_2024">FIDE Candidates 2024</option>
-          <option value="fide_world_championship_2024">FIDE World Championship 2024</option>
-          <option value="2025_freestyle_chess_gst">Freestyle Chess GST 2025</option>
-          <option value="kids_vs_stars">Kids vs Stars</option>
-          <option value="naroditsky_memorial">Naroditsky Memorial</option>
-          <option value="olympiad_2024">Olympiad 2024</option>
-          <option value="pogchamps_6_2025">PogChamps 6 (2025)</option>
-          <option value="pogchamps_es">PogChamps ES</option>
-          <option value="scc">SCC</option>
-          <option value="team_chess_battle">Team Chess Battle</option>
-          <option value="titled_cup_2024">Titled Cup 2024</option>
-          <option value="womens_speed_chess_championship">Women's Speed Chess Championship</option>
-        </optgroup>
-        <optgroup label="Chess.com - Bots">
-          <option value="back_to_school">Back to School</option>
-          <option value="bbq">BBQ</option>
-          <option value="circus">Circus</option>
-          <option value="dating_bachelor">Dating</option>
-          <option value="dinosaurs">Dinosaurs</option>
-          <option value="discord">Discord</option>
-          <option value="earth_day">Earth Day</option>
-          <option value="enter_the_dojo">Enter The Dojo</option>
-          <option value="generations">Generations (?)</option>
-          <option value="generations_a">Generations (A)</option>
-          <option value="generations_b">Generations (B)</option>
-          <option value="generations_boomers">Generations (Boomers)</option>
-          <option value="generations_x">Generations (X)</option>
-          <option value="generations_z">Generations (Z)</option>
-          <option value="halloween">Halloween</option>
-          <option value="halloween_old">Halloween (old)</option>
-          <option value="heist">Heist</option>
-          <option value="holiday">Holiday</option>
-          <option value="holidays">Holidays</option>
-          <option value="jaime_jaquez">Jaime Jaquez</option>
-          <option value="kpop">KPop</option>
-          <option value="martins_family">Martin's Family</option>
-          <option value="new_years">New Year's</option>
-          <option value="pygmy">Pygmy</option>
-          <option value="roman_empire">Roman Empire</option>
-          <option value="runescape">RuneScape</option>
-          <option value="summer">Summer</option>
-          <option value="war_is_over">War is over</option>
-          <option value="winter_athletes">Winter Athletes</option>
-        </optgroup>
-        <optgroup label="Others">
-          <option value="christmas">Christmas</option>
-          <option value="christmas_alt">Christmas Alt</option>
-          <option value="sea">Sea</option>
-        </optgroup>
-      </select>
-      <br /><br />
-
-      <label for="sounds_select">Sounds:</label>
-      <select name="sounds" id="sounds_select">
-        <option value="none">Default Lichess sounds</option>
-        <optgroup label="Chess.com">
-          <option value="chessdotcomdefault">Chess.com default</option>
-          <option value="marble">Marble</option>
-          <option value="beat">Beat</option>
-          <option value="lolz">Lolz</option>
-          <option value="metal">Metal</option>
-          <option value="nature">Nature</option>
-          <option value="newspaper">Newspaper</option>
-          <option value="pebbles">Pebbles</option>
-          <option value="silly">Silly</option>
-          <option value="space">Space</option>
-        </optgroup>
-      </select>
-      <br /><br />
-    </center>
-    <footer>
-      <script src="ressources/js/permissions.js"></script>
-      <script src="ressources/js/preview.js"></script>
-      <script src="ressources/js/updatePieces.js"></script>
-      <script src="ressources/js/updateBoard.js"></script>
-      <script src="ressources/js/updateSound.js"></script>
-    </footer>
+    <script src="ressources/js/catalog.js"></script>
+    <script src="ressources/js/settings.js"></script>
+    <script src="ressources/js/gallery.js"></script>
+    <script src="ressources/js/permissions.js"></script>
+    <script src="ressources/js/preview.js"></script>
+    <script src="ressources/js/popup.js"></script>
   </body>
 </html>
