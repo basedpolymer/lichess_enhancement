@@ -10,137 +10,128 @@ const ROOT = path.join(__dirname, '..');
 const popup = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-//[{ group: 'Chess.com - Bots', options: [{ value, label }] }]
+//Map "Chess.com - Bots" -> { 'Chess.com': [{ sub: 'Bots', options: [{ value, label }] }] }
 function readSelect(id) {
   const start = popup.indexOf(`id="${id}"`);
-  const end = popup.indexOf('</select>', start);
-  const body = popup.slice(start, end);
-  return [...body.matchAll(/<optgroup label="([^"]+)">([\s\S]*?)<\/optgroup>/g)].map((g) => ({
-    group: decode(g[1]),
-    options: [...g[2].matchAll(/<option value="([^"]+)">([^<]+)<\/option>/g)].map((o) => ({
+  const body = popup.slice(start, popup.indexOf('</select>', start));
+  const map = new Map();
+  for (const g of body.matchAll(/<optgroup label="([^"]+)">([\s\S]*?)<\/optgroup>/g)) {
+    const [source, sub] = decode(g[1]).split(' - ');
+    const options = [...g[2].matchAll(/<option value="([^"]+)">([^<]+)<\/option>/g)].map((o) => ({
       value: o[1],
       label: decode(o[2]),
-    })),
-  }));
-}
-
-//"Chess.com - Bots" -> source "Chess.com", subgroup "Bots"
-function bySource(groups) {
-  const map = new Map();
-  for (const g of groups) {
-    const [source, sub] = g.group.split(' - ');
+    }));
     if (!map.has(source)) map.set(source, []);
-    map.get(source).push({ sub: sub || null, options: g.options });
+    map.get(source).push({ sub: sub || null, options });
   }
   return map;
 }
 
-const pieces = bySource(readSelect('pieces_select'));
-const boards = bySource(readSelect('board_select'));
-const sources = [...new Set([...pieces.keys(), ...boards.keys()])];
+const pieces = readSelect('pieces_select');
+const boards = readSelect('board_select');
 
-const LOGOS = {
-  //logos that already spell the source's name replace the text title
-  'Chess.com': '<img class="logo" src="../logo/chesscom_logo_filled.png" alt="Chess.com" width="160" />',
-  Chessfactory: '<img class="logo" src="../logo/chessfoundry.svg" alt="" width="48" />',
-};
-
-const LOGO_ONLY = new Set(['Chess.com']);
-
-//white and black king, queen, knight: enough to recognise a set and tell both colors apart
-const SHOWN = [
-  ['wk', 'White king'],
-  ['wq', 'White queen'],
-  ['wn', 'White knight'],
-  ['bk', 'Black king'],
-  ['bq', 'Black queen'],
+const PIECES_SHOWN = [
+  ['br', 'Black rook'],
   ['bn', 'Black knight'],
+  ['bb', 'Black bishop'],
+  ['bq', 'Black queen'],
+  ['bk', 'Black king'],
 ];
 
 const pieceCard = ({ value, label }) => {
   const ext = value === 'random' ? 'gif' : 'webp';
-  return `          <figure class="card">
-            <figcaption>${esc(label)}</figcaption>
-            <div class="strip">
-${SHOWN.map(([p, alt]) => `              <img loading="lazy" src="../pieces/${value}/${p}.${ext}" alt="${alt}" />`).join('\n')}
-            </div>
-          </figure>`;
+  return `                <div class="style_p">
+                    <div class="h_pre">
+                        <span class="name">${esc(label)}</span>
+                    </div>
+                    <div class="images">
+${PIECES_SHOWN.map(
+  ([p, alt]) => `                        <img class="piece_url" loading="lazy" src="../pieces/${value}/${p}.${ext}" alt="${alt}" />`
+).join('\n')}
+                    </div>
+                </div>`;
 };
 
-const boardCard = ({ value, label }) => `          <figure class="card">
-            <figcaption>${esc(label)}</figcaption>
-            <img class="board" loading="lazy" src="../boards/${value}.webp" alt="" />
-          </figure>`;
+const boardCard = ({ value, label }) => `                <div class="style_b">
+                    <div class="h_pre">
+                        <span class="name">${esc(label)}</span>
+                    </div>
+                    <div class="images">
+                        <img class="board_img" loading="lazy" src="../boards/${value}.webp" alt="Board">
+                    </div>
+                </div>`;
 
-const count = (subs) => (subs || []).reduce((n, s) => n + s.options.length, 0);
-
-function column(kind, subs) {
-  if (!subs) return '';
-  const card = kind === 'pieces' ? pieceCard : boardCard;
-  const title = kind === 'pieces' ? 'Pieces' : 'Boards';
-  return `      <div class="column column-${kind}">
-        <h3>${title} <span class="count">${count(subs)}</span></h3>
-${subs
-  .map(
-    (s) => `${s.sub ? `        <h4>${esc(s.sub)}</h4>\n` : ''}        <div class="grid grid-${kind}">
-${s.options.map(card).join('\n')}
-        </div>`
-  )
-  .join('\n')}
-      </div>`;
+//One column of cards; sub-groups (Events & sports, Bots) get a heading
+function list(cls, groups, card) {
+  const body = (groups || [])
+    .map((g) =>
+      [g.sub ? `                <h3 class="sub_title">${esc(g.sub)}</h3>` : null, ...g.options.map(card)]
+        .filter(Boolean)
+        .join('\n')
+    )
+    .join('\n');
+  return `            <div class="${cls}"><hr />
+${body}
+            </div>`;
 }
-
-const sections = sources
-  .map((source) => {
-    const p = pieces.get(source);
-    const b = boards.get(source);
-    return `    <section id="${slugify(source)}" class="source${b ? '' : ' pieces-only'}">
-      <h2>${LOGO_ONLY.has(source) ? LOGOS[source] : `${LOGOS[source] || ''}<span>${esc(source)}</span>`}</h2>
-      <div class="columns">
-${column('pieces', p)}
-${column('boards', b)}
-      </div>
-    </section>`;
-  })
-  .join('\n\n');
-
-const nav = sources
-  .map((s) => `<a href="#${slugify(s)}">${esc(s)}</a>`)
-  .join('\n        ');
 
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Preview - Lichess enhancement</title>
-  <link rel="stylesheet" href="main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview - Lichess enhancement</title>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <!-- GENERATED by scripts/buildPreview.js from the popup (index.html): edit the popup, then re-run the script -->
-  <header class="top">
-    <picture>
-      <source srcset="../logo/lichess_chess_logo_white.png" media="(prefers-color-scheme: dark)" />
-      <img src="../logo/lichess_chess_logo.png" alt="Lichess enhancement" width="260" />
-    </picture>
-    <p class="subtitle">Unofficial lichess enhancement · <a href="https://github.com/basedpolymer/lichess_enhancement">GitHub</a></p>
-    <h1>Pieces &amp; boards preview</h1>
-    <nav>
-        ${nav}
-    </nav>
-  </header>
+    <!-- GENERATED by scripts/buildPreview.js from the popup (index.html): edit the popup, then re-run the script -->
+    <center>
+        <h1>
+            <picture>
+                <source srcset="../logo/lichess_chess_logo_white.png" media="(prefers-color-scheme: dark)">
+                <img src="../logo/lichess_chess_logo.png" width="300" alt="Lichess enhancement"/>
+            </picture>
+        </h1>
+        <div style="font-size: 1.3em;font-style:italic">Unofficial lichess enhancement / <a href="https://github.com/basedpolymer/lichess_enhancement">Github</a></div>
 
-  <main>
-${sections}
-  </main>
+        <h2>Preview style pieces/boards</h2>
+    </center>
+
+        <br />
+        <div class="list">
+
+            <img class="logo_chesscom" src="../logo/chesscom_logo_filled.png" alt="logo chess.com" width=200/>
+
+${list('list_p_chess', pieces.get('Chess.com'), pieceCard)}
+
+${list('list_b_chess', boards.get('Chess.com'), boardCard)}
+
+            <img class="logo_chessfoundry" src="../logo/chessfoundry.svg" alt="logo chessfoundry" width=100/>
+
+${list('list_p_chessfoundry', pieces.get('Chessfactory'), pieceCard)}
+
+            <h3 class="maurizio_title">Maurizio</h3>
+
+${list('list_p_maurizio', pieces.get('Maurizio Monge'), pieceCard)}
+
+            <h3 class="others_title">Others</h3>
+
+${list('list_p_others', pieces.get('Others'), pieceCard)}
+
+${list('list_b_others', boards.get('Others'), boardCard)}
+        </div>
+        <br />
 </body>
 </html>
 `;
 
+const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Others']);
+for (const source of [...pieces.keys(), ...boards.keys()]) {
+  if (!known.has(source)) throw new Error(`No column for the popup group "${source}": add one to buildPreview.js`);
+}
+
 fs.writeFileSync(path.join(ROOT, 'ressources/preview/index.html'), html);
-console.log(
-  `preview: ${sources.length} sources, ${[...pieces.values()].reduce((n, s) => n + count(s), 0)} piece sets, ${[...boards.values()].reduce((n, s) => n + count(s), 0)} boards`
-);
+const total = (m) => [...m.values()].flat().reduce((n, g) => n + g.options.length, 0);
+console.log(`preview: ${total(pieces)} piece sets, ${total(boards)} boards`);

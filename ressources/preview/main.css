@@ -1,228 +1,191 @@
 /* LIGHT BY DEFAULT, DARK WHEN THE OS ASKS FOR IT */
 :root {
-  --bg: #f3f0e9;
-  --panel: #e9e4d9;
-  --card: #ffffff;
-  --card-border: #d8d1c3;
-  --text: #23211e;
-  --muted: #615a50;
-  --accent: #4f7a28;
-  --square-light: #ebecd0;
-  --square-dark: #779556;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #262421;
-    --panel: #2f2c29;
-    --card: #3a3733;
-    --card-border: #4a4641;
-    --text: #f0ece4;
-    --muted: #b9b2a6;
-    --accent: #81b64c;
-    color-scheme: dark;
-  }
-}
-
-* {
-  box-sizing: border-box;
+    color-scheme: light;
 }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.4;
+    font-family: Montserrat, sans-serif;
+    background: #ffffff;
+    color: #000000;
 }
 
-a {
-  color: var(--accent);
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+
+    body {
+        background: #262421;
+        color: #e9eacf;
+    }
+
+    a {
+        color: #8ab4f8;
+    }
 }
 
-/* HEADER */
-
-.top {
-  text-align: center;
-  padding: 24px 16px 8px;
+/* COLUMNS: chess.com pieces (2 cards wide) | chess.com boards (3 cards wide) | Chessfactory | Maurizio | Others pieces | Others boards */
+.list {
+    display: grid;
+    grid-template-columns: auto 610px 570px 10px 300px 10px 300px 10px 300px 200px auto;
+    align-items: start;
 }
 
-.top img {
-  max-width: 100%;
-  height: auto;
+.list hr {
+    grid-column: 1 / -1;
+    width: 100%;
 }
 
-.subtitle {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-style: italic;
+.logo_chesscom {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
 }
 
-h1 {
-  margin: 16px 0 12px;
-  font-size: 1.8rem;
+.logo_chessfoundry {
+    grid-column: 5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    grid-row: 1;
 }
 
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+.list_p_chess {
+    border-radius: 5px;
+    grid-column: 2;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 300px);
+    column-gap: 10px;
+    justify-content: center;
 }
 
-nav a {
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: var(--panel);
-  border: 1px solid var(--card-border);
-  text-decoration: none;
-  font-weight: 600;
+.list_b_chess {
+    border-radius: 5px;
+    grid-column: 3;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* SECTIONS */
-
-main {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 8px 16px 48px;
+.list_p_chessfoundry {
+    border-radius: 5px;
+    grid-column: 5;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.source {
-  margin-top: 32px;
-  padding: 20px;
-  border-radius: 12px;
-  background: var(--panel);
-  scroll-margin-top: 16px;
+.list_p_maurizio {
+    border-radius: 5px;
+    grid-column: 7;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.source h2 {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 8px;
-  font-size: 1.6rem;
+.list_p_others {
+    border-radius: 5px;
+    grid-column: 9;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.source h2 .logo {
-  height: auto;
-  max-height: 48px;
-  width: auto;
+.list_b_others {
+    border-radius: 5px;
+    grid-column: 10;
+    grid-row: 2;
 }
 
-.columns {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: 24px;
-  align-items: start;
+.others_title {
+    font-size: 3em;
+    grid-column-start: 9;
+    grid-column-end: 11;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
 }
 
-.pieces-only .columns {
-  grid-template-columns: minmax(0, 1fr);
+.maurizio_title {
+    font-size: 3em;
+    grid-column: 7;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
 }
 
-h3 {
-  margin: 12px 0 8px;
-  font-size: 1.25rem;
+/* Events & sports / Bots headings inside the chess.com columns */
+.sub_title {
+    grid-column: 1 / -1;
+    font-size: 2em;
+    text-align: center;
+    margin: 20px 0 5px;
 }
 
-.count {
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 0.9em;
+.board_img {
+    width: 150px;
 }
 
-h4 {
-  margin: 20px 0 8px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--card-border);
-  color: var(--accent);
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.piece_url {
+    width: 50px;
 }
 
-/* GRIDS: 2 COLUMNS OF PIECE SETS, 3 COLUMNS OF BOARDS */
-
-.grid {
-  display: grid;
-  gap: 10px;
+.style_p {
+    background: #a88865;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-.grid-pieces {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.style_b {
+    background: #a88865;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    min-width: 150px;
 }
 
-.pieces-only .grid-pieces {
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+/* chess.com cards of a same row share its height: keep the images aligned at the bottom */
+.list_p_chess .style_p,
+.list_b_chess .style_b {
+    display: flex;
+    flex-direction: column;
 }
 
-.grid-boards {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.list_p_chess .images,
+.list_b_chess .images {
+    margin-top: auto;
 }
 
-/* CARDS */
-
-.card {
-  margin: 0;
-  padding: 8px;
-  border-radius: 8px;
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  min-width: 0;
+.name {
+    font-size: 1.9em;
+    color: #e9eacf;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
-.card figcaption {
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-align: center;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+/* boards are narrower than piece sets: smaller names so long ones wrap instead of overflowing */
+.style_b .name {
+    font-size: 1.4em;
 }
 
-.strip {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  border-radius: 4px;
-  overflow: hidden;
+.h_pre {
+    text-align: center;
+    padding: 0 4px;
 }
 
-.strip img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: contain;
-  object-position: center bottom;
-  background: var(--square-light);
-}
-
-.strip img:nth-child(even) {
-  background: var(--square-dark);
-}
-
-.board {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1;
-  border-radius: 4px;
-}
-
-/* NARROW SCREENS */
-
-@media (max-width: 1000px) {
-  .columns {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (max-width: 520px) {
-  .grid-pieces {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .grid-boards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.images {
+    text-align: center;
 }
