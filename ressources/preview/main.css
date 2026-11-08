@@ -1,163 +1,228 @@
-@font-face {
-    font-family: 'Montserrat';
-    src: url('../font/montserrat.woff2') format('woff2');
+/* LIGHT BY DEFAULT, DARK WHEN THE OS ASKS FOR IT */
+:root {
+  --bg: #f3f0e9;
+  --panel: #e9e4d9;
+  --card: #ffffff;
+  --card-border: #d8d1c3;
+  --text: #23211e;
+  --muted: #615a50;
+  --accent: #4f7a28;
+  --square-light: #ebecd0;
+  --square-dark: #779556;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262421;
+    --panel: #2f2c29;
+    --card: #3a3733;
+    --card-border: #4a4641;
+    --text: #f0ece4;
+    --muted: #b9b2a6;
+    --accent: #81b64c;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Montserrat, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.4;
 }
 
-.list {
-    display: grid;
-    grid-template-columns: auto 300px 200px 200px 10px 300px 10px 300px 10px 300px 200px auto;
+a {
+  color: var(--accent);
 }
 
-.logo_chesscom {
-    grid-column-start: 2;
-    grid-column-end: 5;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
+/* HEADER */
+
+.top {
+  text-align: center;
+  padding: 24px 16px 8px;
 }
 
-.logo_chessfoundry {
-    grid-column: 6;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    grid-row: 1;
+.top img {
+  max-width: 100%;
+  height: auto;
 }
 
-.avatar_ka {
-    grid-column: 8;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    grid-row: 1;
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-style: italic;
 }
 
-.list_p_chessfoundry {
-    border-radius: 5px;
-    grid-column: 6;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+h1 {
+  margin: 16px 0 12px;
+  font-size: 1.8rem;
 }
 
-.list_p_maurizio {
-    border-radius: 5px;
-    grid-column: 8;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
-.list_p_chess {
-    border-radius: 5px;
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+nav a {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--card-border);
+  text-decoration: none;
+  font-weight: 600;
 }
 
-.list_p_ka {
-    border-radius: 5px;
-    grid-column: 8;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* SECTIONS */
+
+main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8px 16px 48px;
 }
 
-.list_b1_chess {
-    border-radius: 5px;
-    grid-column: 3;
+.source {
+  margin-top: 32px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--panel);
+  scroll-margin-top: 16px;
 }
 
-.list_b2_chess {
-    border-radius: 5px;
-    grid-column: 4;
+.source h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
+  font-size: 1.6rem;
 }
 
-.list_p_others {
-    border-radius: 5px;
-    grid-column: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.source h2 .logo {
+  height: auto;
+  max-height: 48px;
+  width: auto;
 }
 
-.list_b_others {
-    border-radius: 5px;
-    grid-column: 11;
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 24px;
+  align-items: start;
 }
 
-.others_title {
-    font-size: 3em;
-    grid-column-start: 10;
-    grid-column-end: 12;
-    grid-row: 1;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
+.pieces-only .columns {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.maurizio_title {
-    font-size: 3em;
-    grid-column-start: 8;
-    grid-column-end: 10;
-    grid-row: 1;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
+h3 {
+  margin: 12px 0 8px;
+  font-size: 1.25rem;
 }
 
-.board_flex {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
+.count {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.9em;
 }
 
-.board_img {
-    width: 150px;
+h4 {
+  margin: 20px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--card-border);
+  color: var(--accent);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.piece_url {
-    width: 50px;
+/* GRIDS: 2 COLUMNS OF PIECE SETS, 3 COLUMNS OF BOARDS */
+
+.grid {
+  display: grid;
+  gap: 10px;
 }
 
-.style_p {
-    background: #a88865;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    margin-top: 5px;
+.grid-pieces {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.style_b {
-    background: #a88865;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    padding: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    min-width: 150px;
+.pieces-only .grid-pieces {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 }
 
-.num {
-    color: #e9eacf;
-    font-size: 1.5em
+.grid-boards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.name {
-    font-size: 1.9em;
-    color: #e9eacf;
+/* CARDS */
+
+.card {
+  margin: 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  min-width: 0;
 }
 
-.h_pre {
-    text-align: center;
+.card figcaption {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
-.images {
-    text-align: center;
+.strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.strip img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center bottom;
+  background: var(--square-light);
+}
+
+.strip img:nth-child(even) {
+  background: var(--square-dark);
+}
+
+.board {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+/* NARROW SCREENS */
+
+@media (max-width: 1000px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .grid-pieces {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .grid-boards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

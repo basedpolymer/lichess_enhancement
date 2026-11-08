@@ -8,8 +8,8 @@
 
 ## Features
 
-- **61 piece sets** — chess.com (2D and 3D), Chessfactory, Maurizio Monge, and community sets (Amogus, Doge, Pony…)
-- **33 board themes** — chess.com boards plus a few extras
+- **96 piece sets** — chess.com (2D and 3D, plus the event, sports and bot sets), Chessfactory, Maurizio Monge, and community sets (Amogus, Doge, Pony…)
+- **107 board themes** — chess.com boards (including event, sports and bot boards) plus a few extras
 - **10 sound sets** — replaces the lichess move / capture / check / checkmate sounds with chess.com sound themes. A move that gives check plays only the check sound, and the chess.com default set adds castle and game-start sounds
 - A **preview page** showing every piece set and board (link inside the popup)
 
@@ -42,7 +42,7 @@ AMO review can make the listing lag a few days behind this repo. To run the late
 
 ## Contributing
 
-Bug reports and new sets are welcome — open an [issue](https://github.com/basedpolymer/lichess_enhancement/issues) or a pull request. To add a piece set, drop 12 files named `bb, bk, bn, bp, bq, br, wb, wk, wn, wp, wq, wr` (`.webp`) in `ressources/pieces/<set_name>/` (lowercase folder name), then add the matching `<option>` in `index.html` and a row in `ressources/preview/index.html`. Convert a PNG losslessly with `ffmpeg -i wq.png -c:v libwebp -lossless 1 wq.webp`. `scripts/downloadStylesFromChesscom.py` can help fetching chess.com styles.
+Bug reports and new sets are welcome — open an [issue](https://github.com/basedpolymer/lichess_enhancement/issues) or a pull request. To add a piece set, drop 12 files named `bb, bk, bn, bp, bq, br, wb, wk, wn, wp, wq, wr` (`.webp`) in `ressources/pieces/<set_name>/` (lowercase folder name), then add the matching `<option>` in `index.html` and run `node scripts/buildPreview.js` to regenerate the preview page (`ressources/preview/index.html`). Convert a PNG losslessly with `ffmpeg -i wq.png -c:v libwebp -lossless 1 wq.webp`. `scripts/downloadStylesFromChesscom.py` can help fetching chess.com styles.
 
 ## Credits & legal
 
