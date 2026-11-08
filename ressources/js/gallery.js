@@ -1,10 +1,9 @@
-//THE SET PICKER SHARED BY THE LICHESS MENU (dasher.js) AND THE POPUP (popup.js):
-//a search field, one chip per section, then favorites, recently used sets and one section per source,
-//every set shown with a thumbnail and its name. Styles: ressources/css/gallery.css
+//THE SET PICKER OF THE POPUP (popup.js): a search field, one chip per section, then the favorites and one
+//section per source, every set shown with a thumbnail and its name. Styles: ressources/css/gallery.css
 //
 //Gallery.create(kind, { onPreview(id | null), onChoose(id), onFavorite(id) }) -> {
 //  el,                          the element to insert
-//  update({ saved, favorites, recent }),
+//  update({ saved, favorites }),
 //  fit(bottom),                 let the list grow down to `bottom` (px from the top of the window)
 //  focusSearch(),
 // }
@@ -12,12 +11,40 @@
 //Needs catalog.js and settings.js loaded first
 
 var Gallery = (function () {
-  const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
   function h(tag, cls, text) {
     const node = document.createElement(tag);
     if (cls) node.className = cls;
     if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  //THUMBNAILS: a cut of the kind's sprite sheet (one file for the whole tab, see scripts/buildThumbs.js), or the
+  //set's own thumbnail when the sheet doesn't have it yet. Shown at half the cell size (sharp on 2x screens)
+  const sprites = typeof LE_SPRITES !== 'undefined' ? LE_SPRITES : {};
+  const spriteAt = {};
+  Object.keys(sprites).forEach((kind) => {
+    spriteAt[kind] = new Map(sprites[kind].ids.map((id, i) => [id, i]));
+  });
+
+  function picture(kind, id) {
+    const sheet = sprites[kind];
+    const at = spriteAt[kind] && spriteAt[kind].get(id);
+    if (at === undefined) {
+      const img = h('img');
+      img.alt = '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.draggable = false;
+      img.src = LE.thumbUrl(kind, id);
+      return img;
+    }
+    const [w, h2] = sheet.cell.map((n) => n / 2);
+    const node = h('span', 'le-sprite');
+    node.style.backgroundImage = `url("${extApi.runtime.getURL(sheet.file)}")`;
+    node.style.backgroundSize = `${sheet.cols * w}px ${sheet.rows * h2}px`;
+    node.style.backgroundPosition = `-${(at % sheet.cols) * w}px -${Math.floor(at / sheet.cols) * h2}px`;
     return node;
   }
 
@@ -31,13 +58,7 @@ var Gallery = (function () {
     pick.type = 'button';
     pick.title = label;
     const thumb = h('span', kind === 'pieces' ? 'le-thumb le-thumb-piece' : 'le-thumb le-thumb-board');
-    const img = h('img');
-    img.alt = '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    img.draggable = false;
-    img.src = LE.thumbUrl(kind, id);
-    thumb.appendChild(img);
+    thumb.appendChild(picture(kind, id));
     pick.append(thumb, h('span', 'le-name', label));
 
     const star = h('button', 'le-star', '★');
@@ -77,8 +98,7 @@ var Gallery = (function () {
     //sections
     const scroll = h('div', 'le-scroll');
     const favSec = section('fav', '★ Favorites', '★ Favorites');
-    const recentSec = section('recent', 'Recently used', 'Recent');
-    scroll.append(favSec, recentSec);
+    scroll.append(favSec);
     const groupSecs = LE.groups(kind).map((g, i) => {
       const sec = section(`g${i}`, g.group.replace(' - ', ' · '), g.short);
       sec.classList.add('le-sec-group');
@@ -101,7 +121,7 @@ var Gallery = (function () {
 
     root.append(bar, scroll, foot);
 
-    const sections = [favSec, recentSec, ...groupSecs];
+    const sections = [favSec, ...groupSecs];
     sections.forEach((sec) => {
       const chip = h('button', 'le-chip', sec.dataset.chip);
       chip.type = 'button';
@@ -109,7 +129,7 @@ var Gallery = (function () {
       chips.appendChild(chip);
     });
 
-    let state = { saved: null, favorites: [], recent: [] };
+    let state = { saved: null, favorites: [] };
     let previewed = null;
 
     function preview(id) {
@@ -118,7 +138,7 @@ var Gallery = (function () {
       handlers.onPreview(id);
     }
 
-    //FAVORITES / RECENT: rebuilt from the lists, hidden while empty
+    //FAVORITES: rebuilt from the list, hidden while empty
     function fillList(sec, ids) {
       const grid = sec.querySelector('.le-grid');
       const key = ids.join(',');
@@ -142,7 +162,6 @@ var Gallery = (function () {
     function update(next) {
       state = Object.assign({}, state, next);
       fillList(favSec, state.favorites);
-      fillList(recentSec, state.recent.filter((id) => id !== state.saved).slice(0, 6));
       markCards();
       const isExt = !LE.isNone(kind, state.saved) && LE.has(kind, state.saved);
       active.replaceChildren('Active: ', h('b', null, LE.label(kind, isExt ? state.saved : null)));
@@ -150,7 +169,7 @@ var Gallery = (function () {
       applyFilter();
     }
 
-    //SEARCH: lists matching sets by section; favorites and recent are hidden meanwhile (they'd repeat them)
+    //SEARCH: lists matching sets by section; favorites are hidden meanwhile (they'd repeat them)
     function applyFilter() {
       const q = norm(search.value.trim());
       let shown = 0;
@@ -164,9 +183,7 @@ var Gallery = (function () {
         sec.hidden = n === 0;
         shown += n;
       });
-      [favSec, recentSec].forEach((sec) => {
-        sec.hidden = !!q || !sec.querySelector('.le-card');
-      });
+      favSec.hidden = !!q || !favSec.querySelector('.le-card');
       empty.hidden = shown > 0;
       chips.querySelectorAll('.le-chip').forEach((chip) => {
         chip.hidden = scroll.querySelector(`[data-sec="${chip.dataset.sec}"]`).hidden;
@@ -258,7 +275,7 @@ var Gallery = (function () {
       scroll.style.maxHeight = `${Math.max(180, Math.floor(bottom - top - foot.offsetHeight))}px`;
       spy();
     }
-    //The chips wrap to another line when favorites / recent appear, or unwrap while searching
+    //The chips wrap to another line when the favorites appear, or unwrap while searching
     if (typeof ResizeObserver !== 'undefined') {
       new ResizeObserver(() => {
         if (fitBottom !== null) fit(fitBottom);

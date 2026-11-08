@@ -1,5 +1,5 @@
-//SAVED CHOICES, FAVORITES AND RECENTLY USED SETS, SHARED BY THE CONTENT SCRIPTS AND THE POPUP
-//Everything lives in storage.sync: { pieces, board, sounds, fav_pieces, fav_board, recent_pieces, recent_board }
+//SAVED CHOICES AND FAVORITES, SHARED BY THE CONTENT SCRIPTS AND THE POPUP
+//Everything lives in storage.sync: { pieces, board, sounds, fav_pieces, fav_board }
 //Needs catalog.js loaded first
 
 //browser (Firefox, promise-native) or chrome (Chromium); var: content scripts share one isolated-world scope
@@ -11,13 +11,10 @@ var LE = (function () {
   //Values meaning "lichess's own pieces / board"
   const NONE = { pieces: 'none_pieces', board: 'none_board' };
   const KINDS = ['pieces', 'board'];
-  const RECENT_MAX = 8;
 
   const STORAGE_DEFAULTS = Object.assign({}, DEFAULTS, {
     fav_pieces: [],
     fav_board: [],
-    recent_pieces: [],
-    recent_board: [],
   });
 
   //kind -> Map(id -> { id, label, group, short })
@@ -56,24 +53,18 @@ var LE = (function () {
     thumbUrl: (kind, id) =>
       extApi.runtime.getURL(`ressources/thumbs/${kind === 'pieces' ? 'pieces' : 'boards'}/${id}.webp`),
 
-    //{ pieces, board, sounds, fav_pieces, fav_board, recent_pieces, recent_board }, ids unknown to the
-    //catalog dropped from the lists
+    //{ pieces, board, sounds, fav_pieces, fav_board }, ids unknown to the catalog dropped from the favorites
     async load() {
       const data = await extApi.storage.sync.get(STORAGE_DEFAULTS);
       KINDS.forEach((kind) => {
         data[`fav_${kind}`] = known(kind, data[`fav_${kind}`]);
-        data[`recent_${kind}`] = known(kind, data[`recent_${kind}`]);
       });
       return data;
     },
 
-    //Save a choice (an id or NONE[kind]) and put it first in the recently used sets
+    //Save a choice: a set id, or NONE[kind] for lichess's own
     async choose(kind, id) {
-      const key = `recent_${kind}`;
-      const data = await extApi.storage.sync.get({ [key]: [] });
-      const recent = known(kind, data[key]).filter((x) => x !== id);
-      if (!isNone(kind, id)) recent.unshift(id);
-      await extApi.storage.sync.set({ [kind]: id, [key]: recent.slice(0, RECENT_MAX) });
+      await extApi.storage.sync.set({ [kind]: id });
     },
 
     //Add or remove a favorite; resolves to true when the set is now a favorite

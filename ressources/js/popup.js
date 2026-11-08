@@ -1,21 +1,19 @@
-//THE POPUP: one set picker (gallery.js) per tab, the sound sets, and a small board showing the choice
-//Hovering a set previews it on the small board and on the active lichess tab, through a port to its content
-//script: closing the popup closes the port, and the tab goes back to the saved sets (main.js)
+//THE POPUP: one set picker (gallery.js) per tab, and the sound sets
+//Hovering a set previews it on the active lichess tab, through a port to its content script: closing the popup
+//closes the port, and the tab goes back to the saved sets (main.js)
+//Only the open tab is built: the popup shows sooner, the other tabs are built the first time they open
 
 (function () {
   const LICHESS_URL = /^https?:\/\/([a-z0-9-]+\.)?lichess1?\.org\//;
-  const TAB_KEY = 'popup_tab';
+  const TABS = ['pieces', 'board', 'sounds'];
+  //localStorage: read synchronously, so the popup opens on the right tab without a second layout
+  const TAB_KEY = 'le_popup_tab';
   const $ = (sel) => document.querySelector(sel);
 
   let state = null;
   let port = null;
+  let current = null;
   const galleries = {};
-  //What the small board shows while hovering (null: the saved set)
-  const hovered = { pieces: null, board: null };
-
-  if (/Mac/i.test(navigator.platform)) {
-    document.querySelectorAll('kbd.mod').forEach((k) => (k.textContent = '⌥ ⇧'));
-  }
 
   //PREVIEW ON THE ACTIVE LICHESS TAB
 
@@ -37,99 +35,22 @@
     .catch(() => {});
 
   function preview(kind, id) {
-    hovered[kind] = id;
-    renderBoard();
-    if (port) {
-      try {
-        port.postMessage({ kind, id });
-      } catch (e) {
-        port = null;
-      }
+    if (!port) return;
+    try {
+      port.postMessage({ kind, id });
+    } catch (e) {
+      port = null;
     }
   }
-
-  //SMALL BOARD: the starting position with the hovered or saved sets
-
-  const START = ['rnbqkbnr', 'pppppppp', '', '', '', '', 'PPPPPPPP', 'RNBQKBNR'];
-  //Lichess's own pieces are not bundled: drawn with chess glyphs (U+FE0E: no emoji pawn)
-  const GLYPHS = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟︎' };
-  const miniBoard = $('#mini_board');
-  const squares = [];
-  START.forEach((row, rank) => {
-    [...row].forEach((letter, file) => {
-      const piece = document.createElement('span');
-      const white = letter === letter.toUpperCase();
-      piece.className = `mp ${white ? 'white' : 'black'}`;
-      piece.style.gridArea = `${rank + 1} / ${file + 1}`;
-      piece.dataset.code = (white ? 'w' : 'b') + letter.toLowerCase();
-      miniBoard.appendChild(piece);
-      squares.push(piece);
-    });
-  });
-
-  function renderBoard() {
-    if (!state) return;
-    const pieces = hovered.pieces !== null ? hovered.pieces : state.pieces;
-    const board = hovered.board !== null ? hovered.board : state.board;
-    const lichessBoard = LE.isNone('board', board) || !LE.has('board', board);
-    miniBoard.classList.toggle('lichess-board', lichessBoard);
-    miniBoard.style.backgroundImage = lichessBoard ? '' : `url("${LE.boardUrl(board)}")`;
-    const lichessPieces = LE.isNone('pieces', pieces) || !LE.has('pieces', pieces);
-    squares.forEach((sq) => {
-      sq.classList.toggle('glyph', lichessPieces);
-      sq.textContent = lichessPieces ? GLYPHS[sq.dataset.code[1]] : '';
-      sq.style.backgroundImage = lichessPieces ? '' : `url("${LE.pieceUrl(pieces, sq.dataset.code)}")`;
-    });
-  }
-
-  //CURRENT CHOICES
-
-  function soundLabel(id) {
-    const item = LE_CATALOG.sounds.find(([value]) => value === id);
-    return item ? item[1] : id;
-  }
-
-  function renderCurrent() {
-    LE.KINDS.forEach((kind) => {
-      const dd = $(`#current_${kind}`);
-      dd.textContent = LE.label(kind, LE.has(kind, state[kind]) ? state[kind] : null);
-      dd.classList.toggle('fav', state[`fav_${kind}`].includes(state[kind]));
-    });
-    $('#current_sounds').textContent = soundLabel(state.sounds);
-  }
-
-  //TABS
-
-  function setTab(tab) {
-    if (!['pieces', 'board', 'sounds'].includes(tab)) tab = 'pieces';
-    document.querySelectorAll('.tabs button').forEach((b) => {
-      b.classList.toggle('active', b.dataset.tab === tab);
-      b.setAttribute('aria-selected', String(b.dataset.tab === tab));
-    });
-    document.querySelectorAll('.tab-body').forEach((body) => (body.hidden = body.dataset.tab !== tab));
-    const gallery = galleries[tab];
-    if (gallery) {
-      gallery.fit(586);
-      gallery.scrollToActive();
-      gallery.focusSearch();
-    }
-  }
-
-  document.querySelector('.tabs').addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    setTab(b.dataset.tab);
-    extApi.storage.local.set({ [TAB_KEY]: b.dataset.tab }).catch(() => {});
-  });
-
-  document.querySelector('.tabs [data-tab="pieces"] small').textContent = LE.count('pieces');
-  document.querySelector('.tabs [data-tab="board"] small').textContent = LE.count('board');
-  document.querySelector('.tabs [data-tab="sounds"] small').textContent = LE_CATALOG.sounds.length - 1;
 
   //PIECES AND BOARD PICKERS
 
-  LE.KINDS.forEach((kind) => {
-    galleries[kind] = Gallery.create(kind, {
+  function galleryState(kind) {
+    return { saved: state[kind], favorites: state[`fav_${kind}`] };
+  }
+
+  function buildGallery(kind) {
+    const gallery = Gallery.create(kind, {
       onPreview: (id) => preview(kind, id),
       onChoose: (id) => {
         LE.choose(kind, id).catch((error) => console.error(error));
@@ -138,12 +59,16 @@
         LE.toggleFavorite(kind, id).catch((error) => console.error(error));
       },
     });
-    $(`.tab-body[data-tab="${kind}"]`).appendChild(galleries[kind].el);
-  });
+    if (state) gallery.update(galleryState(kind));
+    $(`.tab-body[data-tab="${kind}"]`).appendChild(gallery.el);
+    galleries[kind] = gallery;
+    return gallery;
+  }
 
   //SOUNDS: swap the enabled ruleset, save, then tell the background to flush lichess's sound cache
 
   let player = null;
+  let soundsList = null;
 
   function play(id) {
     if (player) player.forEach((audio) => audio.pause());
@@ -166,57 +91,93 @@
     if (tab) extApi.runtime.sendMessage({ sounds_init: value, tab: tab.id }).catch(() => {});
   }
 
-  const soundsList = $('#sounds_list');
-  LE_CATALOG.sounds.forEach(([id, label]) => {
-    const li = document.createElement('li');
-    li.dataset.id = id;
-    const pick = document.createElement('button');
-    pick.type = 'button';
-    pick.className = 'sound-pick';
-    pick.textContent = label;
-    li.appendChild(pick);
-    if (id !== 'none') {
-      const listen = document.createElement('button');
-      listen.type = 'button';
-      listen.className = 'sound-play';
-      listen.title = `Listen: ${label}`;
-      listen.textContent = '▶';
-      li.appendChild(listen);
-    }
-    soundsList.appendChild(li);
-  });
-
-  soundsList.addEventListener('click', (e) => {
-    const li = e.target.closest('li');
-    if (!li) return;
-    if (e.target.closest('.sound-play')) play(li.dataset.id);
-    else chooseSound(li.dataset.id).catch((error) => console.error(error));
-  });
+  function buildSounds() {
+    soundsList = document.createElement('ul');
+    soundsList.className = 'sounds';
+    LE_CATALOG.sounds.forEach(([id, label]) => {
+      const li = document.createElement('li');
+      li.dataset.id = id;
+      const pick = document.createElement('button');
+      pick.type = 'button';
+      pick.className = 'sound-pick';
+      pick.textContent = label;
+      li.appendChild(pick);
+      if (id !== 'none') {
+        const listen = document.createElement('button');
+        listen.type = 'button';
+        listen.className = 'sound-play';
+        listen.title = `Listen: ${label}`;
+        listen.textContent = '▶';
+        li.appendChild(listen);
+      }
+      soundsList.appendChild(li);
+    });
+    soundsList.addEventListener('click', (e) => {
+      const li = e.target.closest('li');
+      if (!li) return;
+      if (e.target.closest('.sound-play')) play(li.dataset.id);
+      else chooseSound(li.dataset.id).catch((error) => console.error(error));
+    });
+    $('.tab-body[data-tab="sounds"]').appendChild(soundsList);
+    renderSounds();
+  }
 
   function renderSounds() {
+    if (!soundsList || !state) return;
     soundsList.querySelectorAll('li').forEach((li) => li.classList.toggle('on', li.dataset.id === state.sounds));
   }
+
+  //TABS
+
+  function setTab(tab) {
+    if (!TABS.includes(tab)) tab = 'pieces';
+    current = tab;
+    document.querySelectorAll('.tabs button').forEach((b) => {
+      b.classList.toggle('active', b.dataset.tab === tab);
+      b.setAttribute('aria-selected', String(b.dataset.tab === tab));
+    });
+    document.querySelectorAll('.tab-body').forEach((body) => (body.hidden = body.dataset.tab !== tab));
+    if (tab === 'sounds') {
+      if (!soundsList) buildSounds();
+      return;
+    }
+    const gallery = galleries[tab] || buildGallery(tab);
+    gallery.fit(586);
+    if (state) gallery.scrollToActive();
+    gallery.focusSearch();
+  }
+
+  document.querySelector('.tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    setTab(b.dataset.tab);
+    try {
+      localStorage.setItem(TAB_KEY, b.dataset.tab);
+    } catch (err) {}
+  });
+
+  document.querySelector('.tabs [data-tab="pieces"] small').textContent = LE.count('pieces');
+  document.querySelector('.tabs [data-tab="board"] small').textContent = LE.count('board');
+  document.querySelector('.tabs [data-tab="sounds"] small').textContent = LE_CATALOG.sounds.length - 1;
+
+  let savedTab = null;
+  try {
+    savedTab = localStorage.getItem(TAB_KEY);
+  } catch (err) {}
+  setTab(savedTab);
 
   //STATE
 
   function render() {
-    LE.KINDS.forEach((kind) => {
-      galleries[kind].update({
-        saved: state[kind],
-        favorites: state[`fav_${kind}`],
-        recent: state[`recent_${kind}`],
-      });
-    });
-    renderBoard();
-    renderCurrent();
+    Object.keys(galleries).forEach((kind) => galleries[kind].update(galleryState(kind)));
     renderSounds();
   }
 
-  Promise.all([LE.load(), extApi.storage.local.get({ [TAB_KEY]: 'pieces' })])
-    .then(([data, local]) => {
+  LE.load()
+    .then((data) => {
       state = data;
       render();
-      setTab(local[TAB_KEY]);
+      if (galleries[current]) galleries[current].scrollToActive();
     })
     .catch((error) => console.error(error));
 

@@ -32,12 +32,8 @@
     },
     {
       "matches": ["*://*.lichess.org/*", "*://*.lichess1.org/*"],
-      "js": [
-        "ressources/js/gallery.js",
-        "ressources/js/dasher.js",
-        "ressources/js/shortcuts.js"
-      ],
-      "css": ["ressources/css/gallery.css", "ressources/css/lichess.css"],
+      "js": ["ressources/js/dasher.js", "ressources/js/shortcuts.js"],
+      "css": ["ressources/css/lichess.css"],
       "run_at": "document_end"
     }
   ],

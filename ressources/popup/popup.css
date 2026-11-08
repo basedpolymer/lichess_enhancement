@@ -10,7 +10,6 @@
   --le-input-bg: #f8f7f4;
   --le-accent: #3692e7;
   --le-star: #dd9a0f;
-  --le-card-min: 76px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,7 +32,7 @@
 }
 
 body {
-  width: 720px;
+  width: 440px;
   margin: 0;
   font-family: 'Noto Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -98,17 +97,15 @@ button {
   color: #ab442f;
 }
 
-/* PICKER | SIDE PANEL */
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 228px;
+/* PICKER */
+.picker {
   /* same height on every tab: the popup window would resize otherwise */
   min-height: 541px;
 }
 
-.picker {
-  min-width: 0;
-  border-inline-end: 1px solid var(--le-border);
+/* 5 sets per row, whether the system shows scroll bars or not */
+.le-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .tabs {
@@ -208,101 +205,4 @@ button {
 .sound-play:hover {
   opacity: 1;
   background: rgba(127, 127, 127, 0.2);
-}
-
-/* SIDE: small board, current choices, tips */
-.side {
-  padding: 14px;
-}
-
-.mini-board {
-  display: grid;
-  grid-template: repeat(8, 1fr) / repeat(8, 1fr);
-  width: 200px;
-  height: 200px;
-  border-radius: 3px;
-  background-size: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* lichess's brown board: a8 light */
-.mini-board.lichess-board {
-  background: repeating-conic-gradient(#b58863 0 25%, #f0d9b5 0 50%) 0 0 / 25% 25%;
-}
-
-.mp {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: center / contain no-repeat;
-  font-size: 20px;
-  line-height: 1;
-}
-
-.mp.glyph.white {
-  color: #fff;
-  -webkit-text-stroke: 0.8px #000;
-}
-
-.mp.glyph.black {
-  color: #000;
-}
-
-.current {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 4px 10px;
-  margin: 14px 0 12px;
-}
-
-.current dt {
-  color: var(--le-dim);
-}
-
-.current dd {
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 600;
-}
-
-.current dd.fav::after {
-  content: ' ★';
-  color: var(--le-star);
-}
-
-.tips {
-  padding-top: 10px;
-  border-top: 1px solid var(--le-border);
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--le-dim);
-}
-
-.tips p {
-  margin: 0 0 8px;
-}
-
-.tips b {
-  color: var(--le-fg);
-}
-
-.keys {
-  display: inline-block;
-  min-width: 112px;
-}
-
-kbd {
-  display: inline-block;
-  min-width: 18px;
-  padding: 0 4px;
-  border: 1px solid var(--le-border);
-  border-bottom-width: 2px;
-  border-radius: 3px;
-  font: inherit;
-  font-size: 11px;
-  text-align: center;
-  color: var(--le-fg);
-  background: var(--le-input-bg);
 }

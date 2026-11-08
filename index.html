@@ -13,7 +13,7 @@
       <div class="brand">
         <picture>
           <source srcset="ressources/logo/lichess_chess_logo_white.png" media="(prefers-color-scheme: dark)" />
-          <img class="logo" src="ressources/logo/lichess_chess_logo.png" alt="Lichess" />
+          <img class="logo" src="ressources/logo/lichess_chess_logo.png" alt="Lichess" width="93" height="26" />
         </picture>
         <span class="brand-sub">enhancement</span>
       </div>
@@ -28,43 +28,21 @@
       <button id="grant_permissions">Grant access to lichess.org</button>
     </div>
 
-    <div class="layout">
-      <section class="picker">
-        <div class="tabs" role="tablist">
-          <button type="button" role="tab" data-tab="pieces">Pieces <small></small></button>
-          <button type="button" role="tab" data-tab="board">Board <small></small></button>
-          <button type="button" role="tab" data-tab="sounds">Sounds <small></small></button>
-        </div>
-        <div class="tab-body" data-tab="pieces"></div>
-        <div class="tab-body" data-tab="board"></div>
-        <div class="tab-body" data-tab="sounds">
-          <ul class="sounds" id="sounds_list"></ul>
-        </div>
-      </section>
-
-      <aside class="side">
-        <div class="mini-board" id="mini_board" aria-hidden="true"></div>
-        <dl class="current">
-          <dt>Pieces</dt>
-          <dd id="current_pieces"></dd>
-          <dt>Board</dt>
-          <dd id="current_board"></dd>
-          <dt>Sounds</dt>
-          <dd id="current_sounds"></dd>
-        </dl>
-        <div class="tips">
-          <p><b>On lichess</b>, the sets are also in your menu: Piece set / Board › <b>Enhancement</b>.</p>
-          <p>
-            <span class="keys"><kbd class="mod">Alt+Shift</kbd> <kbd>←</kbd> <kbd>→</kbd></span> pieces<br />
-            <span class="keys"><kbd class="mod">Alt+Shift</kbd> <kbd>↑</kbd> <kbd>↓</kbd></span> board
-          </p>
-          <p>With two ★ favorites or more, the shortcuts cycle through them.</p>
-        </div>
-      </aside>
-    </div>
+    <main class="picker">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="pieces">Pieces <small></small></button>
+        <button type="button" role="tab" data-tab="board">Board <small></small></button>
+        <button type="button" role="tab" data-tab="sounds">Sounds <small></small></button>
+      </div>
+      <!-- Filled by popup.js when first shown -->
+      <div class="tab-body" data-tab="pieces"></div>
+      <div class="tab-body" data-tab="board" hidden></div>
+      <div class="tab-body" data-tab="sounds" hidden></div>
+    </main>
 
     <script src="ressources/js/catalog.js"></script>
     <script src="ressources/js/settings.js"></script>
+    <script src="ressources/js/thumbs.js"></script>
     <script src="ressources/js/gallery.js"></script>
     <script src="ressources/js/permissions.js"></script>
     <script src="ressources/js/preview.js"></script>
