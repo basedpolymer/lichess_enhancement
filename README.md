@@ -12,23 +12,13 @@
 
 ## Features
 
-- **96 piece sets** — chess.com (2D and 3D, plus the event, sports and bot sets), Chessfactory, Maurizio Monge, and community sets (Amogus, Doge, Pony…)
-- **107 board themes** — chess.com boards (including event, sports and bot boards) plus a few extras
-- **10 sound sets** — replaces the lichess move / capture / check / checkmate sounds with chess.com sound themes. A move that gives check plays only the check sound, and the chess.com default set adds castle and game-start sounds
-- **A visual popup** — every set with a picture and its name, a search field and one section per source. Hover a set to see it on the lichess board, click to keep it. The sound sets have a ▶ to listen
-- **Favorites** — ★ a set to pin it at the top of the popup
-- **In step with lichess's menu** — while an extension set is on the board, lichess's own choice (your menu › Piece set / Board) is no longer highlighted; picking one of lichess's sets there gives the board back to lichess
+- **96 piece sets** — chess.com, Chessfactory, Maurizio Monge, and community sets (Amogus, Doge, Pony…)
+- **107 board themes** — chess.com boards plus a few extras
+- **10 sound sets** — replaces the lichess sounds with chess.com sound themes.
 - **Keyboard shortcuts** on lichess — <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>←</kbd>/<kbd>→</kbd> previous / next piece set, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> previous / next board (<kbd>⌥</kbd>+<kbd>⇧</kbd> on macOS). With two favorites or more, they cycle through your favorites
 - A **preview page** showing every piece set and board (link inside the popup)
 
 Every change applies immediately to all open lichess tabs and syncs across your devices.
-
-## Screenshots
-
-| | |
-|:---:|:---:|
-| <img src="docs/screenshots/2-neo-green.png" alt="Neo pieces on the Green board"> Neo · Green | <img src="docs/screenshots/3-wehrmacht-graffiti.png" alt="Wehrmacht vs Soviet Union pieces on the Graffiti board"> Wehrmacht vs Soviet Union · Graffiti |
-| <img src="docs/screenshots/4-popup-pony-glass.png" alt="The popup's Board tab: Pony pieces on the Glass board"> Pony · Glass, Board tab | <img src="docs/screenshots/5-all-sets.png" alt="The preview page with every piece set and board"> The preview page |
 
 ## Installation
 
