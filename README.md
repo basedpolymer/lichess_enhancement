@@ -4,6 +4,10 @@
 
 <p align="center">♟️ New pieces, boards and sounds for <a href="https://lichess.org">lichess.org</a>, including the chess.com styles.</p>
 
+<p align="center">
+  <img src="docs/screenshots/1-popup-glass-icy-sea.png" alt="The popup open on lichess: Glass pieces on the Icy Sea board" width="800">
+</p>
+
 ---
 
 ## Features
@@ -18,6 +22,13 @@
 - A **preview page** showing every piece set and board (link inside the popup)
 
 Every change applies immediately to all open lichess tabs and syncs across your devices.
+
+## Screenshots
+
+| | |
+|:---:|:---:|
+| <img src="docs/screenshots/2-neo-green.png" alt="Neo pieces on the Green board"> Neo · Green | <img src="docs/screenshots/3-wehrmacht-graffiti.png" alt="Wehrmacht vs Soviet Union pieces on the Graffiti board"> Wehrmacht vs Soviet Union · Graffiti |
+| <img src="docs/screenshots/4-popup-pony-glass.png" alt="The popup's Board tab: Pony pieces on the Glass board"> Pony · Glass, Board tab | <img src="docs/screenshots/5-all-sets.png" alt="The preview page with every piece set and board"> The preview page |
 
 ## Installation
 
