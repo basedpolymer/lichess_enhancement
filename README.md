@@ -5,6 +5,11 @@
 <p align="center">♟️ New pieces, boards and sounds for <a href="https://lichess.org">lichess.org</a>, including the chess.com styles.</p>
 
 <p align="center">
+  <a href="https://chromewebstore.google.com/detail/lichess-enhancement/ikmpcihcohdjammgkopfgohojdelmfoi"><img src="docs/badges/chrome.png" alt="Available in the Chrome Web Store" height="64"></a>
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/enhancement-lichess/"><img src="docs/badges/firefox.png" alt="Get the add-on for Firefox" height="64"></a>
+</p>
+
+<p align="center">
   <img src="docs/screenshots/1-popup-glass-icy-sea.png" alt="The popup open on lichess: Glass pieces on the Icy Sea board" width="800">
 </p>
 
