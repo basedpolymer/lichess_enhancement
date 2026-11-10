@@ -115,3 +115,12 @@ Every lneo_* board: one of its material textures over its two square colors
 
 **Lichess** https://github.com/lichess-org/lila (public/images/board, the lila authors and pirouetti, AGPLv3+), imported by scripts/importLichessSets.js
 Every lichess_* board is the lichess board of the same name
+
+**Community boards**, imported by scripts/importCommunitySets.js
+qootee — Zaphroz, CC BY 4.0 https://userstyles.world/style/5870
+vector_wood — Kadagaden, CC BY 4.0 https://github.com/Kadagaden/chess-pieces
+chessboart — Michał Fudalej, CC BY-NC-SA 4.0 https://github.com/lichess-org/lila/issues/22454
+geometric — anonymous, no license https://github.com/lichess-org/lila/issues/13375
+
+**ChessSkins** https://github.com/NikAgs/ChessSkins (MIT, Copyright (c) 2026 NikAgs, artwork generated with Claude)
+Every cs_* board

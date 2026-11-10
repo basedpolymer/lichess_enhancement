@@ -113,6 +113,91 @@
         "path": "ressources/sound_rulesets/lneo_boxwood.json"
       },
       {
+        "id": "esports_world_cup",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/esports_world_cup.json"
+      },
+      {
+        "id": "chess_the_musical",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/chess_the_musical.json"
+      },
+      {
+        "id": "baseball",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/baseball.json"
+      },
+      {
+        "id": "stone_capture",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/stone_capture.json"
+      },
+      {
+        "id": "puzzle_blitz",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/puzzle_blitz.json"
+      },
+      {
+        "id": "crokinole",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/crokinole.json"
+      },
+      {
+        "id": "go_stones",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/go_stones.json"
+      },
+      {
+        "id": "katrain",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/katrain.json"
+      },
+      {
+        "id": "kenney_wood",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/kenney_wood.json"
+      },
+      {
+        "id": "kenney_glass",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/kenney_glass.json"
+      },
+      {
+        "id": "kenney_stone",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/kenney_stone.json"
+      },
+      {
+        "id": "kenney_casino",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/kenney_casino.json"
+      },
+      {
+        "id": "synth_ui",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/synth_ui.json"
+      },
+      {
+        "id": "retro_8bit",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/retro_8bit.json"
+      },
+      {
+        "id": "xboard",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/xboard.json"
+      },
+      {
+        "id": "pychess",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/pychess.json"
+      },
+      {
+        "id": "lneo_warm_wood",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lneo_warm_wood.json"
+      },
+      {
         "id": "lichess_standard",
         "enabled": false,
         "path": "ressources/sound_rulesets/lichess_standard.json"

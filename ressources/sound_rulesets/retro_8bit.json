@@ -1,0 +1,70 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/retro_8bit/move.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Move\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Move)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/retro_8bit/capture.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Capture\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Capture)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/retro_8bit/check.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Check\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Check)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/retro_8bit/checkmate.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Checkmate\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Checkmate)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  }
+]

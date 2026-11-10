@@ -71,6 +71,29 @@ ${body}
             </div>`;
 }
 
+//The sources added after those above: a title (with the logo of the source when it has one) over a column of
+//pieces and, for some, a column of boards. first: its first column in the grid of main.css
+const EXTRA = [
+  { source: 'Community', first: 18, boards: true },
+  { source: 'Lucas Chess', first: 21, logo: 'lucas_chess.png' },
+  { source: 'HollowLeaf', first: 23 },
+  { source: 'ChessSkins', first: 25, logo: 'chessskins.png', boards: true },
+  { source: 'WBChess', first: 28, logo: 'wbchess.png' },
+];
+
+const at = (cls, column) => `${cls}" style="grid-column: ${column}`;
+
+function extraSection({ source, first, logo, boards: hasBoards }) {
+  const img = logo ? `<img src="../logo/${logo}" alt="" width=56 height=56 />` : '';
+  return [
+    `            <h3 class="${at('src_title', hasBoards ? `${first} / ${first + 2}` : first)}">${img}${esc(source)}</h3>`,
+    list(at('col_p', first), pieces.get(source), pieceCard),
+    hasBoards ? list(at('col_b', first + 1), boards.get(source), boardCard) : null,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+}
+
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,15 +153,21 @@ ${list('list_b_lneo', boards.get('Lichess Neo'), boardCard)}
 ${list('list_p_lichess', pieces.get('Lichess'), pieceCard)}
 
 ${list('list_b_lichess', boards.get('Lichess'), boardCard)}
+
+${EXTRA.map(extraSection).join('\n\n')}
         </div>
         <br />
 </body>
 </html>
 `;
 
-const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Others', 'Lichess Neo', 'Lichess']);
+const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Others', 'Lichess Neo', 'Lichess', ...EXTRA.map((e) => e.source)]);
 for (const source of [...pieces.keys(), ...boards.keys()]) {
   if (!known.has(source)) throw new Error(`No column for the catalog group "${source}": add one to buildPreview.js`);
+}
+
+for (const e of EXTRA) {
+  if (boards.has(e.source) && !e.boards) throw new Error(`"${e.source}" has boards but no boards column in buildPreview.js`);
 }
 
 fs.writeFileSync(path.join(ROOT, 'ressources/preview/index.html'), html);

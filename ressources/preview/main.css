@@ -24,10 +24,11 @@ body {
     }
 }
 
-/* COLUMNS: chess.com pieces (2 cards wide) | chess.com boards (3 cards wide) | Chessfactory | Maurizio | Others pieces | Others boards | Lichess Neo pieces | Lichess Neo boards | Lichess pieces | Lichess boards */
+/* COLUMNS: chess.com pieces (2 cards wide) | chess.com boards (3 cards wide) | Chessfactory | Maurizio | Others pieces | Others boards | Lichess Neo pieces | Lichess Neo boards | Lichess pieces | Lichess boards | Community pieces | Community boards | Lucas Chess | HollowLeaf | ChessSkins pieces | ChessSkins boards | WBChess
+   The last seven are placed by scripts/buildPreview.js (EXTRA), which gives each its first column */
 .list {
     display: grid;
-    grid-template-columns: auto 610px 570px 10px 300px 10px 300px 10px 300px 200px 10px 300px 200px 10px 300px 200px auto;
+    grid-template-columns: auto 610px 570px 10px 300px 10px 300px 10px 300px 200px 10px 300px 200px 10px 300px 200px 10px 300px 200px 10px 300px 10px 300px 10px 300px 200px 10px 300px auto;
     align-items: start;
 }
 
@@ -176,7 +177,34 @@ body {
     margin-bottom: 10px;
 }
 
-/* Events & sports / Bots headings inside the chess.com columns */
+/* The sources placed by buildPreview.js: title (logo + name), pieces column, boards column */
+.src_title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 0;
+    font-size: 2.4em;
+    white-space: nowrap;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.col_p {
+    border-radius: 5px;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.col_b {
+    border-radius: 5px;
+    grid-row: 2;
+}
+
+/* Events & sports / Bots / Noun Project headings inside a column */
 .sub_title {
     grid-column: 1 / -1;
     font-size: 2em;
