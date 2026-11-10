@@ -41,7 +41,8 @@ var LE = (function () {
     count: (kind) => index[kind].size,
 
     label(kind, id) {
-      if (isNone(kind, id)) return kind === 'pieces' ? "Lichess's pieces" : "Lichess's board";
+      //Not "Lichess's pieces": the catalog has a Lichess section too
+      if (isNone(kind, id)) return "None · lichess's own setting";
       const item = index[kind].get(id);
       return item ? item.label : id;
     },

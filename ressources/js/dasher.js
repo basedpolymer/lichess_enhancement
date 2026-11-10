@@ -3,7 +3,7 @@
 //  that highlight (main.js marks <html data-le-pieces / data-le-board> while an extension set is active)
 //- one of lichess's sets is clicked there: the extension gives the pieces / board back to lichess
 //Relies on lichess's markup: #dasher_app .sub.piece / .sub.board > .list > button. If it changes, this does
-//nothing and the popup's "Use lichess's pieces / board" still works
+//nothing and the popup's "Turn off" still works
 //Needs settings.js and main.js (Styles)
 
 (function () {

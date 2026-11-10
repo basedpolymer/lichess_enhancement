@@ -101,7 +101,7 @@
   };
   const soundLabel = (id) => {
     const item = LE_CATALOG.sounds.find((s) => s[0] === id);
-    return item && id !== 'none' ? `${item[2]} · ${item[1]}` : "Lichess's sounds";
+    return item && id !== 'none' ? `${item[2]} · ${item[1]}` : "None · lichess's own setting";
   };
 
   //A set has no picture: bars drawn from its name, so that each set keeps its own look
@@ -156,8 +156,9 @@
     });
 
     const foot = node('div', 'le-foot');
-    const reset = node('button', 'le-reset', "Use lichess's sounds");
+    const reset = node('button', 'le-reset', 'Turn off');
     reset.type = 'button';
+    reset.title = 'Lichess uses the sounds chosen in its own menu';
     reset.addEventListener('click', () => chooseSound('none').catch((error) => console.error(error)));
     foot.append(node('span', 'le-active'), reset);
 

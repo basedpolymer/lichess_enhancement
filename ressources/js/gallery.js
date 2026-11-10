@@ -115,8 +115,10 @@ var Gallery = (function () {
     //active set + way back to lichess's own
     const foot = h('div', 'le-foot');
     const active = h('span', 'le-active');
-    const reset = h('button', 'le-reset', kind === 'pieces' ? "Use lichess's pieces" : "Use lichess's board");
+    //Hands the pieces / board back to lichess
+    const reset = h('button', 'le-reset', 'Turn off');
     reset.type = 'button';
+    reset.title = `Lichess uses the ${kind === 'pieces' ? 'pieces' : 'board'} chosen in its own menu`;
     foot.append(active, reset);
 
     root.append(bar, scroll, foot);

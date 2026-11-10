@@ -120,6 +120,10 @@ body {
 }
 
 .lneo_title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 0;
     font-size: 3em;
     grid-column-start: 12;
     grid-column-end: 14;
@@ -144,8 +148,7 @@ body {
     grid-row: 2;
 }
 
-.lichess_title {
-    font-size: 3em;
+.logo_lichess {
     grid-column-start: 15;
     grid-column-end: 17;
     grid-row: 1;

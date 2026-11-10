@@ -116,13 +116,16 @@ ${list('list_p_others', pieces.get('Others'), pieceCard)}
 
 ${list('list_b_others', boards.get('Others'), boardCard)}
 
-            <h3 class="lneo_title">Lichess Neo</h3>
+            <h3 class="lneo_title"><img src="../logo/lichess_neo.png" alt="" width=64 height=64 />Lichess Neo</h3>
 
 ${list('list_p_lneo', pieces.get('Lichess Neo'), pieceCard)}
 
 ${list('list_b_lneo', boards.get('Lichess Neo'), boardCard)}
 
-            <h3 class="lichess_title">Lichess</h3>
+            <picture class="logo_lichess">
+                <source srcset="../logo/lichess_chess_logo_white.png" media="(prefers-color-scheme: dark)">
+                <img src="../logo/lichess_chess_logo.png" alt="logo lichess" width=200 />
+            </picture>
 
 ${list('list_p_lichess', pieces.get('Lichess'), pieceCard)}
 
