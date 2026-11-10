@@ -106,6 +106,51 @@
         "id": "space",
         "enabled": false,
         "path": "ressources/sound_rulesets/space.json"
+      },
+      {
+        "id": "lneo_boxwood",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lneo_boxwood.json"
+      },
+      {
+        "id": "lichess_standard",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_standard.json"
+      },
+      {
+        "id": "lichess_piano",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_piano.json"
+      },
+      {
+        "id": "lichess_nes",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_nes.json"
+      },
+      {
+        "id": "lichess_sfx",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_sfx.json"
+      },
+      {
+        "id": "lichess_futuristic",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_futuristic.json"
+      },
+      {
+        "id": "lichess_robot",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_robot.json"
+      },
+      {
+        "id": "lichess_lisp",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_lisp.json"
+      },
+      {
+        "id": "lichess_woodland",
+        "enabled": false,
+        "path": "ressources/sound_rulesets/lichess_woodland.json"
       }
     ]
   },

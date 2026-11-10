@@ -115,3 +115,16 @@ nyc
 
 **Pawel Kacprzak** https://userstyles.org/users/899252
 chessvision
+**Lichess Neo** https://github.com/theophile-wallez/LichessNeo (MIT, Copyright (c) 2026 Théophile Wallez), imported by scripts/importLichessNeoSets.js
+lneo_mochi
+lneo_mellow
+lneo_poppy
+lneo_bop
+lneo_pebble
+lneo_loop
+lneo_fold
+lneo_bitty
+
+**Lichess** https://github.com/lichess-org/lila (public/piece), imported by scripts/importLichessSets.js
+Every lichess_* folder is the lichess piece set of the same name. Authors and licenses, set by set:
+https://github.com/lichess-org/lila/blob/master/COPYING.md

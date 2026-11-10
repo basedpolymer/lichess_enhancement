@@ -1,0 +1,546 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/move.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Move\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Move)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/capture.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Capture\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Capture)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/check.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Check\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Check)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/checkmate.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Checkmate\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Checkmate)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/genericnotify.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/GenericNotify\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/GenericNotify)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/newpm.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/NewPM\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/NewPM)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/newchallenge.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/NewChallenge\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/NewChallenge)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/newchatmessage.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/NewChatMessage\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/NewChatMessage)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/confirmation.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Confirmation\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Confirmation)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/error.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Error\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Error)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/lowtime.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/LowTime\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/LowTime)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown0.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown0\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown0)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown1.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown1\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown1)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown2.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown2\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown2)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown3.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown3\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown3)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown4.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown4\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown4)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown5.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown5\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown5)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown6.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown6\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown6)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown7.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown7\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown7)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown8.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown8\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown8)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown9.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown9\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown9)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/countdown10.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/CountDown10\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/CountDown10)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/victory.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Victory\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Victory)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/defeat.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Defeat\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Defeat)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 25,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/draw.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Draw\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Draw)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/berserk.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Berserk\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Berserk)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 27,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/explosion.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Explosion\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Explosion)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/outofbound.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/OutOfBound\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/OutOfBound)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 29,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/tournament1st.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Tournament1st\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Tournament1st)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 30,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/tournament2nd.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Tournament2nd\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Tournament2nd)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 31,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/tournament3rd.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/Tournament3rd\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/Tournament3rd)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  },
+  {
+    "id": 32,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/ressources/sounds/lichess_futuristic/tournamentother.mp3"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://lichess1?\\.org/assets/(hashed/TournamentOther\\.[0-9a-z]+|([^/]+/)?sound/[^/]+/TournamentOther)\\.mp3$",
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media"
+      ]
+    }
+  }
+]

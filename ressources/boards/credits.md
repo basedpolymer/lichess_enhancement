@@ -110,3 +110,8 @@ christmas_alt
 
 **Anonymer Mensch** https://userstyles.org/users/629256
 sea
+**Lichess Neo** https://github.com/theophile-wallez/LichessNeo (MIT, Copyright (c) 2026 Théophile Wallez), imported by scripts/importLichessNeoSets.js
+Every lneo_* board: one of its material textures over its two square colors
+
+**Lichess** https://github.com/lichess-org/lila (public/images/board, the lila authors and pirouetti, AGPLv3+), imported by scripts/importLichessSets.js
+Every lichess_* board is the lichess board of the same name

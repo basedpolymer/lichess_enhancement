@@ -115,13 +115,25 @@ ${list('list_p_maurizio', pieces.get('Maurizio Monge'), pieceCard)}
 ${list('list_p_others', pieces.get('Others'), pieceCard)}
 
 ${list('list_b_others', boards.get('Others'), boardCard)}
+
+            <h3 class="lneo_title">Lichess Neo</h3>
+
+${list('list_p_lneo', pieces.get('Lichess Neo'), pieceCard)}
+
+${list('list_b_lneo', boards.get('Lichess Neo'), boardCard)}
+
+            <h3 class="lichess_title">Lichess</h3>
+
+${list('list_p_lichess', pieces.get('Lichess'), pieceCard)}
+
+${list('list_b_lichess', boards.get('Lichess'), boardCard)}
         </div>
         <br />
 </body>
 </html>
 `;
 
-const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Others']);
+const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Others', 'Lichess Neo', 'Lichess']);
 for (const source of [...pieces.keys(), ...boards.keys()]) {
   if (!known.has(source)) throw new Error(`No column for the catalog group "${source}": add one to buildPreview.js`);
 }

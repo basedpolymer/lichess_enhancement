@@ -144,65 +144,58 @@ button {
   display: none;
 }
 
-/* SOUNDS */
-.sounds {
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-}
-
-.sounds li {
+/* SOUNDS: cards like the pieces and boards (gallery.css), a drawing of bars for picture */
+.sound-bars {
   display: flex;
   align-items: center;
-  border-radius: 4px;
+  justify-content: center;
+  gap: 3px;
+  width: 56px;
+  height: 40px;
 }
 
-.sounds li:hover {
-  background: var(--le-hover);
+.sound-bars i {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--le-accent);
+  opacity: 0.75;
 }
 
-.sounds li.on {
-  color: #fff;
-  background: var(--le-active);
+.le-card.le-on .sound-bars i {
+  background: #fff;
+  opacity: 1;
 }
 
-.sound-pick {
-  flex: 1;
-  padding: 8px 10px;
-  border: 0;
-  background: none;
-  text-align: start;
-  cursor: pointer;
-}
-
-.sound-pick::before {
-  content: '';
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin-inline-end: 10px;
-  border: 2px solid currentColor;
+/* listen without picking: shown on hover, like the favorite star */
+.le-gallery .sound-play {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  padding: 0;
   border-radius: 50%;
-  vertical-align: -1px;
-  opacity: 0.6;
+  font-size: 10px;
+  line-height: 22px;
+  text-align: center;
+  color: var(--le-dim);
+  opacity: 0;
+  transition: opacity 0.12s;
 }
 
-.sounds li.on .sound-pick::before {
-  background: currentColor;
+.le-card:hover .sound-play,
+.le-card:focus-within .sound-play {
+  opacity: 0.8;
+}
+
+.le-gallery .sound-play:hover,
+.le-gallery .sound-play:focus-visible {
   opacity: 1;
+  color: var(--le-fg);
+  background: rgba(127, 127, 127, 0.25);
 }
 
-.sound-play {
-  width: 34px;
-  height: 30px;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.sound-play:hover {
-  opacity: 1;
-  background: rgba(127, 127, 127, 0.2);
+.le-card.le-on .sound-play {
+  color: #fff;
 }

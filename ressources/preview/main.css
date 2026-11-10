@@ -24,10 +24,10 @@ body {
     }
 }
 
-/* COLUMNS: chess.com pieces (2 cards wide) | chess.com boards (3 cards wide) | Chessfactory | Maurizio | Others pieces | Others boards */
+/* COLUMNS: chess.com pieces (2 cards wide) | chess.com boards (3 cards wide) | Chessfactory | Maurizio | Others pieces | Others boards | Lichess Neo pieces | Lichess Neo boards | Lichess pieces | Lichess boards */
 .list {
     display: grid;
-    grid-template-columns: auto 610px 570px 10px 300px 10px 300px 10px 300px 200px auto;
+    grid-template-columns: auto 610px 570px 10px 300px 10px 300px 10px 300px 200px 10px 300px 200px 10px 300px 200px auto;
     align-items: start;
 }
 
@@ -102,6 +102,56 @@ body {
     border-radius: 5px;
     grid-column: 10;
     grid-row: 2;
+}
+
+.list_p_lneo {
+    border-radius: 5px;
+    grid-column: 12;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list_b_lneo {
+    border-radius: 5px;
+    grid-column: 13;
+    grid-row: 2;
+}
+
+.lneo_title {
+    font-size: 3em;
+    grid-column-start: 12;
+    grid-column-end: 14;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.list_p_lichess {
+    border-radius: 5px;
+    grid-column: 15;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list_b_lichess {
+    border-radius: 5px;
+    grid-column: 16;
+    grid-row: 2;
+}
+
+.lichess_title {
+    font-size: 3em;
+    grid-column-start: 15;
+    grid-column-end: 17;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
 }
 
 .others_title {

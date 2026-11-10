@@ -91,40 +91,86 @@
     if (tab) extApi.runtime.sendMessage({ sounds_init: value, tab: tab.id }).catch(() => {});
   }
 
+  //Cards like the pieces and boards (same classes, ressources/css/gallery.css): a click picks the set and plays
+  //it, the corner button only plays it
+  const node = (tag, cls, text) => {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (text !== undefined) el.textContent = text;
+    return el;
+  };
+  const soundLabel = (id) => {
+    const item = LE_CATALOG.sounds.find((s) => s[0] === id);
+    return item && id !== 'none' ? `${item[2]} · ${item[1]}` : "Lichess's sounds";
+  };
+
+  //A set has no picture: bars drawn from its name, so that each set keeps its own look
+  function soundPicture(id) {
+    const bars = node('span', 'sound-bars');
+    let seed = 7;
+    for (const ch of id) seed = (seed * 31 + ch.charCodeAt(0)) % 9973;
+    for (let i = 0; i < 7; i += 1) {
+      seed = (seed * 137 + 187) % 9973;
+      const bar = node('i');
+      bar.style.height = `${20 + (seed % 80)}%`;
+      bars.appendChild(bar);
+    }
+    return bars;
+  }
+
   function buildSounds() {
-    soundsList = document.createElement('ul');
-    soundsList.className = 'sounds';
-    LE_CATALOG.sounds.forEach(([id, label]) => {
-      const li = document.createElement('li');
-      li.dataset.id = id;
-      const pick = document.createElement('button');
-      pick.type = 'button';
-      pick.className = 'sound-pick';
-      pick.textContent = label;
-      li.appendChild(pick);
-      if (id !== 'none') {
-        const listen = document.createElement('button');
-        listen.type = 'button';
-        listen.className = 'sound-play';
-        listen.title = `Listen: ${label}`;
-        listen.textContent = '▶';
-        li.appendChild(listen);
+    soundsList = node('div', 'le-gallery le-sounds');
+    const scroll = node('div', 'le-scroll');
+    let grid = null;
+    let section;
+    LE_CATALOG.sounds.forEach(([id, label, group]) => {
+      if (id === 'none') return;
+      if (group !== section) {
+        section = group;
+        const sec = node('section', 'le-sec');
+        const head = node('h4', 'le-sec-head');
+        head.append(node('span', null, group), node('small', 'le-count', LE_CATALOG.sounds.filter((s) => s[2] === group).length));
+        grid = node('div', 'le-grid');
+        sec.append(head, grid);
+        scroll.appendChild(sec);
       }
-      soundsList.appendChild(li);
+      const card = node('div', 'le-card');
+      card.dataset.id = id;
+      const pick = node('button', 'le-pick');
+      pick.type = 'button';
+      pick.title = label;
+      const thumb = node('span', 'le-thumb');
+      thumb.appendChild(soundPicture(id));
+      pick.append(thumb, node('span', 'le-name', label));
+      const listen = node('button', 'sound-play', '▶');
+      listen.type = 'button';
+      listen.title = `Listen: ${label}`;
+      card.append(pick, listen);
+      grid.appendChild(card);
     });
-    soundsList.addEventListener('click', (e) => {
-      const li = e.target.closest('li');
-      if (!li) return;
-      if (e.target.closest('.sound-play')) play(li.dataset.id);
-      else chooseSound(li.dataset.id).catch((error) => console.error(error));
+    scroll.addEventListener('click', (e) => {
+      const card = e.target.closest('.le-card');
+      if (!card) return;
+      play(card.dataset.id);
+      if (!e.target.closest('.sound-play')) chooseSound(card.dataset.id).catch((error) => console.error(error));
     });
+
+    const foot = node('div', 'le-foot');
+    const reset = node('button', 'le-reset', "Use lichess's sounds");
+    reset.type = 'button';
+    reset.addEventListener('click', () => chooseSound('none').catch((error) => console.error(error)));
+    foot.append(node('span', 'le-active'), reset);
+
+    soundsList.append(scroll, foot);
     $('.tab-body[data-tab="sounds"]').appendChild(soundsList);
     renderSounds();
   }
 
   function renderSounds() {
     if (!soundsList || !state) return;
-    soundsList.querySelectorAll('li').forEach((li) => li.classList.toggle('on', li.dataset.id === state.sounds));
+    soundsList.querySelectorAll('.le-card').forEach((card) => card.classList.toggle('le-on', card.dataset.id === state.sounds));
+    soundsList.querySelector('.le-active').replaceChildren('Active: ', node('b', null, soundLabel(state.sounds)));
+    soundsList.querySelector('.le-reset').hidden = !state.sounds || state.sounds === 'none';
   }
 
   //TABS
@@ -139,6 +185,11 @@
     document.querySelectorAll('.tab-body').forEach((body) => (body.hidden = body.dataset.tab !== tab));
     if (tab === 'sounds') {
       if (!soundsList) buildSounds();
+      //Like the galleries: the list grows down to the bottom of the popup
+      const scroll = soundsList.querySelector('.le-scroll');
+      const foot = soundsList.querySelector('.le-foot');
+      scroll.style.maxHeight = `${Math.floor(586 - scroll.getBoundingClientRect().top - foot.offsetHeight)}px`;
+      scroll.style.minHeight = scroll.style.maxHeight;
       return;
     }
     const gallery = galleries[tab] || buildGallery(tab);

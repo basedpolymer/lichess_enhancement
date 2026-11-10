@@ -4,7 +4,7 @@
 //- ressources/thumbs/boards/<id>.webp: the two top-left squares (a8, b8), 128 x 64
 //- ressources/thumbs/pieces.webp, boards.webp: sprite sheets of those, and ressources/js/thumbs.js (see below)
 //The popup would otherwise load every full-size board (1200 x 1200) to show 64 x 32 pixels
-//Needs cwebp (libwebp) and ffmpeg. Usage (from the repo root): node scripts/buildThumbs.js [--force]
+//Needs ffmpeg, and cwebp (libwebp) when it is installed. Usage (from the repo root): node scripts/buildThumbs.js [--force]
 
 const fs = require('fs');
 const os = require('os');
@@ -31,7 +31,32 @@ function webpSize(file) {
 }
 
 const upToDate = (src, out) => !force && fs.existsSync(out) && fs.statSync(out).mtimeMs >= fs.statSync(src).mtimeMs;
-const cwebp = (args) => execFileSync('cwebp', ['-quiet', '-mt', ...args], { stdio: 'inherit' });
+
+//cwebp when it is installed, otherwise ffmpeg's libwebp encoder with the same options
+let hasCwebp = true;
+try {
+  execFileSync('cwebp', ['-version'], { stdio: 'ignore' });
+} catch (e) {
+  hasCwebp = false;
+}
+
+//cwebp arguments: [-q n] [-alpha_q n] [-crop x y w h] [-resize w h] <src> -o <out>
+function cwebp(args) {
+  if (hasCwebp) return execFileSync('cwebp', ['-quiet', '-mt', ...args], { stdio: 'inherit' });
+  const value = (flag, n) => (args.includes(flag) ? args.slice(args.indexOf(flag) + 1, args.indexOf(flag) + 1 + n) : null);
+  const out = value('-o', 1)[0];
+  const src = args[args.indexOf('-o') - 1];
+  const filters = ['format=rgba'];
+  const crop = value('-crop', 4);
+  if (crop) filters.push(`crop=${crop[2]}:${crop[3]}:${crop[0]}:${crop[1]}`);
+  const resize = value('-resize', 2);
+  //0: keep the aspect ratio, as cwebp does
+  if (resize) filters.push(`scale=${resize.map((n) => (n === '0' ? '-1' : n)).join(':')}:flags=lanczos`);
+  execFileSync('ffmpeg', [
+    '-v', 'error', '-y', '-i', src, '-vf', filters.join(','), '-frames:v', '1',
+    '-c:v', 'libwebp', '-quality', (value('-q', 1) || ['75'])[0], out,
+  ]);
+}
 
 let built = 0;
 const missing = [];

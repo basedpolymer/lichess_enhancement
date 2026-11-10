@@ -17,9 +17,9 @@
 
 ## Features
 
-- **96 piece sets** — chess.com, Chessfactory, Maurizio Monge, and community sets (Amogus, Doge, Pony…)
-- **107 board themes** — chess.com boards plus a few extras
-- **10 sound sets** — replaces the lichess sounds with chess.com sound themes.
+- **145 piece sets** — chess.com, Chessfactory, Maurizio Monge, community sets (Amogus, Doge, Pony…), Lichess Neo, and lichess's own sets, so everything is picked from one place
+- **153 board themes** — chess.com boards, a few extras, Lichess Neo's material boards and lichess's own boards
+- **19 sound sets** — replaces the lichess board sounds with chess.com sound themes or Lichess Neo's Boxwood, or switches to any of lichess's own sets (notifications, clock and game end sounds included).
 - **Keyboard shortcuts** on lichess — <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>←</kbd>/<kbd>→</kbd> previous / next piece set, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> previous / next board (<kbd>⌥</kbd>+<kbd>⇧</kbd> on macOS). With two favorites or more, they cycle through your favorites
 - A **preview page** showing every piece set and board (link inside the popup)
 
@@ -54,8 +54,8 @@ AMO review can make the listing lag a few days behind this repo. To run the late
 
 ## Contributing
 
-Bug reports and new sets are welcome — open an [issue](https://github.com/basedpolymer/lichess_enhancement/issues) or a pull request. To add a piece set, drop 12 files named `bb, bk, bn, bp, bq, br, wb, wk, wn, wp, wq, wr` (`.webp`) in `ressources/pieces/<set_name>/` (lowercase folder name), then add a line for it in `ressources/js/catalog.js`, run `node scripts/buildThumbs.js` to make its thumbnail and the sprite sheets (needs `cwebp`, from libwebp, and `ffmpeg`) and `node scripts/buildPreview.js` to regenerate the preview page (`ressources/preview/index.html`). Boards work the same way: `ressources/boards/<board_name>.webp`. Convert a PNG losslessly with `ffmpeg -i wq.png -c:v libwebp -lossless 1 wq.webp`. `scripts/downloadStylesFromChesscom.py` can help fetching chess.com styles.
+Bug reports and new sets are welcome — open an [issue](https://github.com/basedpolymer/lichess_enhancement/issues) or a pull request. To add a piece set, drop 12 files named `bb, bk, bn, bp, bq, br, wb, wk, wn, wp, wq, wr` (`.webp`) in `ressources/pieces/<set_name>/` (lowercase folder name), then add a line for it in `ressources/js/catalog.js`, run `node scripts/buildThumbs.js` to make its thumbnail and the sprite sheets (needs `ffmpeg`, and uses `cwebp`, from libwebp, when it is installed) and `node scripts/buildPreview.js` to regenerate the preview page (`ressources/preview/index.html`). Boards work the same way: `ressources/boards/<board_name>.webp`. Convert a PNG losslessly with `ffmpeg -i wq.png -c:v libwebp -lossless 1 wq.webp`. `scripts/downloadStylesFromChesscom.py` can help fetching chess.com styles; `scripts/importLichessSets.js` and `scripts/importLichessNeoSets.js` re-import lichess's own sets and Lichess Neo's.
 
 ## Credits & legal
 
-Piece and board artwork and sounds belong to their respective authors — see [`ressources/pieces/credits.md`](ressources/pieces/credits.md) and [`ressources/boards/credits.md`](ressources/boards/credits.md). This is an unofficial project, not affiliated with lichess.org or chess.com.
+Piece and board artwork and sounds belong to their respective authors (lichess's own sets: see lila's [COPYING.md](https://github.com/lichess-org/lila/blob/master/COPYING.md); Lichess Neo's: MIT, © Théophile Wallez) — see [`ressources/pieces/credits.md`](ressources/pieces/credits.md) and [`ressources/boards/credits.md`](ressources/boards/credits.md). This is an unofficial project, not affiliated with lichess.org or chess.com.
