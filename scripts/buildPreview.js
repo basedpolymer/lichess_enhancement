@@ -74,11 +74,11 @@ ${body}
 //The sources added after those above: a title (with the logo of the source when it has one) over a column of
 //pieces and, for some, a column of boards. first: its first column in the grid of main.css
 const EXTRA = [
-  { source: 'Community', first: 18, boards: true },
-  { source: 'Lucas Chess', first: 21, logo: 'lucas_chess.png' },
-  { source: 'HollowLeaf', first: 23 },
-  { source: 'ChessSkins', first: 25, logo: 'chessskins.png', boards: true },
-  { source: 'WBChess', first: 28, logo: 'wbchess.png' },
+  { source: 'Lucas Chess', first: 18, logo: 'lucas_chess.png' },
+  { source: 'HollowLeaf', first: 20 },
+  { source: 'ChessSkins', first: 22, logo: 'chessskins.png', boards: true },
+  { source: 'WBChess', first: 25, logo: 'wbchess.png' },
+  { source: 'Noun Project', first: 27 },
 ];
 
 const at = (cls, column) => `${cls}" style="grid-column: ${column}`;
@@ -133,11 +133,11 @@ ${list('list_p_chessfoundry', pieces.get('Chessfactory'), pieceCard)}
 
 ${list('list_p_maurizio', pieces.get('Maurizio Monge'), pieceCard)}
 
-            <h3 class="others_title">Others</h3>
+            <h3 class="community_title">Community</h3>
 
-${list('list_p_others', pieces.get('Others'), pieceCard)}
+${list('list_p_community', pieces.get('Community'), pieceCard)}
 
-${list('list_b_others', boards.get('Others'), boardCard)}
+${list('list_b_community', boards.get('Community'), boardCard)}
 
             <h3 class="lneo_title"><img src="../logo/lichess_neo.png" alt="" width=64 height=64 />Lichess Neo</h3>
 
@@ -146,8 +146,8 @@ ${list('list_p_lneo', pieces.get('Lichess Neo'), pieceCard)}
 ${list('list_b_lneo', boards.get('Lichess Neo'), boardCard)}
 
             <picture class="logo_lichess">
-                <source srcset="../logo/lichess_chess_logo_white.png" media="(prefers-color-scheme: dark)">
-                <img src="../logo/lichess_chess_logo.png" alt="logo lichess" width=200 />
+                <source srcset="../logo/lichess_org_white.png" media="(prefers-color-scheme: dark)">
+                <img src="../logo/lichess_org.png" alt="lichess.org" width=260 />
             </picture>
 
 ${list('list_p_lichess', pieces.get('Lichess'), pieceCard)}
@@ -161,7 +161,7 @@ ${EXTRA.map(extraSection).join('\n\n')}
 </html>
 `;
 
-const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Others', 'Lichess Neo', 'Lichess', ...EXTRA.map((e) => e.source)]);
+const known = new Set(['Chess.com', 'Chessfactory', 'Maurizio Monge', 'Community', 'Lichess Neo', 'Lichess', ...EXTRA.map((e) => e.source)]);
 for (const source of [...pieces.keys(), ...boards.keys()]) {
   if (!known.has(source)) throw new Error(`No column for the catalog group "${source}": add one to buildPreview.js`);
 }
